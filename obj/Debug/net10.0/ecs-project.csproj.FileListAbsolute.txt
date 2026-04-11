@@ -1,0 +1,14 @@
+/home/nicomalvi/CARPETA NICO/ecs-project/bin/Debug/net10.0/ecs-project
+/home/nicomalvi/CARPETA NICO/ecs-project/bin/Debug/net10.0/ecs-project.deps.json
+/home/nicomalvi/CARPETA NICO/ecs-project/bin/Debug/net10.0/ecs-project.runtimeconfig.json
+/home/nicomalvi/CARPETA NICO/ecs-project/bin/Debug/net10.0/ecs-project.dll
+/home/nicomalvi/CARPETA NICO/ecs-project/bin/Debug/net10.0/ecs-project.pdb
+/home/nicomalvi/CARPETA NICO/ecs-project/obj/Debug/net10.0/ecs-project.GeneratedMSBuildEditorConfig.editorconfig
+/home/nicomalvi/CARPETA NICO/ecs-project/obj/Debug/net10.0/ecs-project.AssemblyInfoInputs.cache
+/home/nicomalvi/CARPETA NICO/ecs-project/obj/Debug/net10.0/ecs-project.AssemblyInfo.cs
+/home/nicomalvi/CARPETA NICO/ecs-project/obj/Debug/net10.0/ecs-project.csproj.CoreCompileInputs.cache
+/home/nicomalvi/CARPETA NICO/ecs-project/obj/Debug/net10.0/ecs-project.dll
+/home/nicomalvi/CARPETA NICO/ecs-project/obj/Debug/net10.0/refint/ecs-project.dll
+/home/nicomalvi/CARPETA NICO/ecs-project/obj/Debug/net10.0/ecs-project.pdb
+/home/nicomalvi/CARPETA NICO/ecs-project/obj/Debug/net10.0/ecs-project.genruntimeconfig.cache
+/home/nicomalvi/CARPETA NICO/ecs-project/obj/Debug/net10.0/ref/ecs-project.dll
