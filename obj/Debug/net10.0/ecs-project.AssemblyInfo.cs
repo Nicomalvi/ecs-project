@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ecs-project")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+be84c64c9100a9a0ba68edfda3475284b7100d67")]
 [assembly: System.Reflection.AssemblyProductAttribute("ecs-project")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ecs-project")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
