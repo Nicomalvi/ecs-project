@@ -1,1 +1,4 @@
 obj/
+bin/
+ecs-project-v2.csproj
+ecs-project-v2.sln
