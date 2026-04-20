@@ -62,8 +62,9 @@ int human = Prefabs.Human(w);
 
 int sword = IDManager.get_id();
 w.ascii.Add(sword, '/');
+w.name.Add(sword, "sword");
 
-MapUtils.AddToMap(w, sword, (17,17));
+MapUtils.AddToMap(w,sword,(17,17));
 MapUtils.AddToMap(w,goblin,(1,1));
 MapUtils.AddToMap(w,human,(17,15));
 // ============================================================================================
@@ -77,6 +78,26 @@ w.ai_behaviour.Remove(human);
 while (true)
 {
     RenderSystem.Run(w);
+    // PANTALLA ============================================================================
+    Console.SetCursorPosition(0, Config.HEIGHT + 1);
+    for (int i = 0; i < Config.MESSAGE_LINES; i++)
+        Console.WriteLine(new string(' ', Console.WindowWidth));
+
+    // imprimir mensajes del turno anterior y limpiar
+    Console.SetCursorPosition(0, Config.HEIGHT + 1);
+    foreach (string msg in w.announcement_list)
+        Console.WriteLine(msg.PadRight(Console.WindowWidth));
+    w.announcement_list.Clear();
+    // PANTALLA ============================================================================
+    
+    // stats fijos
+    Console.SetCursorPosition(0, Config.HEIGHT + Config.MESSAGE_LINES + 2);
+    if (!(w.player == -1))
+        Console.WriteLine($"Tick {tick}  HP: {w.health.Get(w.player).current}        ");
+    else
+        Console.WriteLine("PLAYER DIED :(:(");
+
+
     if (tick % 10 == 0)
         HealthSystem.Run(w); // IMPORTANTE DONDE VA ESTO (me curo antes de que me ataquen por ahora)
     SightDetectionSystem.Run(w);

@@ -40,6 +40,12 @@ public static class AIBehaviourSystem
                     };
                     w.damage.Add(damage, damage_done);
                     w.attack_targets.Add(damage, new List<int> { target });
+
+                    string actor = "someone nameless";
+                    if (w.name.Has(id)) actor = w.name.Get(id);
+                    string victim = "someone nameless";
+                    if (w.name.Has(target)) victim = w.name.Get(target);
+                    w.announcement_list.Add(actor + " attacks " + victim + "!");
                     // CASO ESTOY AL LADO ! ! ! ! ! */
                 } else
                 {

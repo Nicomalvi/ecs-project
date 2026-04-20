@@ -24,6 +24,9 @@ public static class DamageSystem
 
                 if (target_health.current <= 0)
                 {   // CHEQUEO TE MATE
+                    string victim = "someone nameless";
+                    if(w.name.Has(target_id)) victim = w.name.Get(target_id);
+                    w.announcement_list.Add(victim + " has died!");
                     // ej. kill counter? damage deberia tener source tambien
                 }
                 

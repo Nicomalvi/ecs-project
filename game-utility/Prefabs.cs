@@ -4,6 +4,7 @@ public static class Prefabs
     {
         int goblin = IDManager.get_id();
         w.ascii.Add(goblin, 'g');
+        w.name.Add(goblin, "goblin");
         w.map_blocks.Add(goblin, (true,false));
 
         //w.energy.Add(goblin, (5,0,2));
@@ -42,6 +43,7 @@ public static class Prefabs
     {
         int human = IDManager.get_id();
         w.ascii.Add(human, '@');
+        w.name.Add(human, "human");
         w.map_blocks.Add(human, (true,false));
 
         //w.energy.Add(human, (5,0,3));

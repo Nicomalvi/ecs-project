@@ -47,27 +47,55 @@ public static class InputSystem
     static void HandlePickup(World w)
     {
         var pos = w.position.Get(w.player);
-        List<int> items_in_cell = new List<int>(w.game_map[pos.x, pos.y]); // debo copiar la lista sino la edito mientras itero sobre ella
-        foreach (int id in items_in_cell)
+        
+        // armar lista de items en la celda (sin el player)
+        var items = new List<int>();
+        foreach (int id in w.game_map[pos.x, pos.y])
         {
             if (id == w.player) continue;
-            //if (!w.ascii.Has(id)) continue; el ascii no deberia determinar si puedo agarrar
-            w.holding.Get(w.player).Add(id);
-            MapUtils.RemoveFromMap(w,id);
-            w.held_by.Add(id, w.player);
+            if (w.ascii.Has(id)) items.Add(id);  // solo items con representacion visual
+        }
+
+        if (items.Count == 0)
+        {
+            w.announcement_list.Add("There is nothing here to pick up.");
+            return;
+        }
+
+        if (items.Count == 1)  // si hay solo 1, agarralo directo sin preguntar
+        {
+            Actions.PickUp(w, w.player, items[0]);
+            return;
+        }
+
+        // mostrar menu de seleccion
+        Console.SetCursorPosition(0, Config.HEIGHT + 1);
+        Console.WriteLine("Pick up what?".PadRight(Console.WindowWidth));
+        for (int i = 0; i < items.Count; i++)
+        {
+            string name = w.name.Has(items[i]) ? w.name.Get(items[i]) : "unknown item";
+            char letter = (char)('a' + i);
+            Console.WriteLine($"  {letter}) {name}".PadRight(Console.WindowWidth));
+        }
+
+        // esperar seleccion
+        while (true)
+        {
+            var key = Console.ReadKey(intercept: true).Key;
+            if (key == ConsoleKey.Escape) return;  // cancelar
+
+            int index = key - ConsoleKey.A;  // A=0, B=1, C=2...
+            if (index >= 0 && index < items.Count)
+            {
+                Actions.PickUp(w, w.player, items[index]);
+                return;
+            }
         }
     }
 
     static void HandleDrop(World w)
     {
-        if (!w.holding.Has(w.player)) return;
-        var inv = w.holding.Get(w.player);
-        if (inv.Count == 0) return;
-        if (!w.position.Has(w.player)) return;
-        int item = inv[0];
-        inv.RemoveAt(0);
-        w.held_by.Remove(item); // CLASES SE PASAN POR REFERENCIA! NO TENGO QUE AÑADIR DE VUELTA
-        MapUtils.AddToMap(w, item, w.position.Get(w.player));
+        // preguntar: cual id dropear? luego Action.Drop(player, id)
     }
 
     static void HandleInventory(World w) { }

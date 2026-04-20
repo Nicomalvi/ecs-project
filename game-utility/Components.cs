@@ -6,6 +6,7 @@ public class World
     public SparseSet<(short x, short y)> movement = new();                         // se le sumara a la pos para actualizarla
     public SparseSet<AuxTypes.Energy> energy = new();                              // energia
     public SparseSet<string> ai_behaviour = new();                                 // FSM?
+    public SparseSet<string> name = new();
     // string malo para localidad
 
     public SparseSet<char> ascii = new();                                          // como se ve si esta arriba de todo en el mapa (relacion con race?)
@@ -27,7 +28,6 @@ public class World
     public SparseSet<AuxTypes.Damage> damage = new();                              // cuanto daño hago?
     public SparseSet<string> death_effect = new();                                 // que pasa cuando muero?
     // string malo para localidad
-    
 
     public SparseSet<List<int>> holding = new();                                   // cuales entidades estoy guardando? (no tener = no puedo llevar nada)
     public SparseSet <int> held_by = new();                                        // quien me tiene en su inventario? (si esto fuera una lista quizas varias personas tienen 1 item! interesante)
@@ -44,6 +44,10 @@ public class World
     // mapa ==============================================================================================================================================
     public List<int>[,]      game_map;
     public (int blocks_movement, int blocks_vision)[,] aux_map;
+    // ===================================================================================================================================================
+
+    public List<string> announcement_list = new(); // los mensajes que agregan todos los sistemas
+    // ahora mismo AddMesagge es muy facil, en un futuro solo se deberia agregar lo que el jugador puede percibir
 
     public World()
     {
