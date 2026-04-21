@@ -8,3 +8,7 @@
 que atraviesan bien las paredes
 
 -el BFS de detectar enemigos podria tambien marcar el proximo paso hacia todos, para no hacer varios BFS innecesarios
+
+-usos de string a enum ahorran dolores de cabeza
+
+-si conozco dense[i], usar directo es mas rapido que Set? inseguro?

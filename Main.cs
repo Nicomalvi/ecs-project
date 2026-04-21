@@ -80,15 +80,26 @@ w.player = human;
 w.ai_behaviour.Remove(human);
 
 while (true)
-{
+{   
+    if (w.current_turn == 0)
+    {
+        // 1. shuffle (Fisher-Yates)
+        for (int i = w.turn_order.Count() - 1; i > 0; i--)
+        {
+            int j = Random.Shared.Next(i + 1);
+            (w.turn_order[i], w.turn_order[j]) = (w.turn_order[j], w.turn_order[i]);
+        }
+        // 2. sort por speed (desc)
+        w.turn_order.Sort((a, b) =>
+            w.speed.Get(b).CompareTo(w.speed.Get(a)));
+    }
+    
     RenderSystem.Run(w);
     if (w.tick % 10 == 0)
         HealthSystem.Run(w); // IMPORTANTE DONDE VA ESTO (me curo antes de que me ataquen por ahora)
     SightDetectionSystem.Run(w);
-    EnergySystem.Run(w);
-
-    // Estos 3 deberian estar en un loop, dependiendo de a quien le toque
-    // ademas, se deberian saltear si no tengo energia
+    // EnergySystem.Run(w);
+    // se deberian saltear si no tengo energia
     // entonces los ticks siguen pasando pero yo no tuve turno, lo mismo para la IA
     InputSystem.Run(w);
     AIBehaviourSystem.Run(w);
@@ -98,13 +109,9 @@ while (true)
     // y normalmente (intentaré) cuando termine de usar una entidad damage o on death, éste valor se debería remover
     DamageSystem.Run(w);
     DeathSystem.Run(w);
-    // =============================================================================================
-    // DEBUG
-    // Console.SetCursorPosition(0, Config.HEIGHT + 2);
-    // Console.WriteLine($"goblin health: {w.health.Get(goblin).current}        ");
-    //Console.SetCursorPosition(0, Config.HEIGHT + 3);
-    //Console.WriteLine($"mem: {GC.GetTotalMemory(false) / 1024f:F1} KB        ");
-    // =============================================================================================
     Thread.Sleep(50);
     w.tick ++;
+
+    w.current_turn ++;
+    if(w.current_turn == w.turn_order.Count()) w.current_turn = 0;
 }

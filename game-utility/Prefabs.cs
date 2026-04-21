@@ -8,7 +8,9 @@ public static class Prefabs
         w.map_blocks.Add(goblin, (true,false));
 
         //w.energy.Add(goblin, (5,0,2));
+        w.speed.Add(goblin, 5);
         w.ai_behaviour.Add(goblin, "idle");
+        w.turn_order.Add(goblin);
 
         w.race.Add(goblin, AuxTypes.Race.orc);
         w.alignment.Add(goblin, AuxTypes.Alingment.chaotic);
@@ -47,7 +49,10 @@ public static class Prefabs
         w.map_blocks.Add(human, (true,false));
 
         //w.energy.Add(human, (5,0,3));
-        w.ai_behaviour.Add(human, "chase");
+        w.speed.Add(human, 6);
+        w.ai_behaviour.Add(human, "idle");
+        w.turn_order.Add(human);
+        w.turn_order.Add(human);
 
         w.race.Add(human, AuxTypes.Race.human);
         w.alignment.Add(human, AuxTypes.Alingment.neutral);

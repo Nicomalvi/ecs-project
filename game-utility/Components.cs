@@ -6,6 +6,8 @@ public class World
     public SparseSet<(short x, short y)> movement = new();                         // se le sumara a la pos para actualizarla
     public SparseSet<AuxTypes.Energy> energy = new();                              // energia
     public SparseSet<string> ai_behaviour = new();                                 // FSM?
+    public SparseSet<bool> has_turn = new();                                       // ia + me toca (+ tengo energia?) = actuar
+    public SparseSet<short> speed = new();                                         // util para generar turnos
     public SparseSet<string> name = new();
     // string malo para localidad
 
@@ -41,6 +43,8 @@ public class World
 
     // CONSIDERAR un poco de cache locality sigue siendo mejor que nada :D
 
+    public List<int> turn_order = new(); // lista de id's que quieren actuar, ordenada
+    public short current_turn = 0;
     // mapa ==============================================================================================================================================
     public List<int>[,]      game_map;
     public (int blocks_movement, int blocks_vision)[,] aux_map;

@@ -12,15 +12,20 @@ public static class AIBehaviourSystem
             // elijo a la entidad que puedo ver mas cerca
             // si estoy al lado          -> genero damage
             // si estoy a más de un paso -> genero 1 paso del camino mínimo
-            while(!finished)
+            while(!finished && w.turn_order[w.current_turn]==id)
             {
                 if (w.ai_behaviour.dense[i] == "chase" && finished == false) 
                 {
-                    if (!w.position.Has(id) || !w.movement.Has(id) || !w.detected_enemies.Has(id) || w.detected_enemies.Get(id).Count == 0) continue;
-
+                    if (!w.position.Has(id) || !w.movement.Has(id) || !w.detected_enemies.Has(id) || w.detected_enemies.Get(id).Count == 0) 
+                    {
+                        w.ai_behaviour.Set(id,"idle");
+                        continue;
+                    }
                     int target = w.detected_enemies.Get(id)[0];  // el enemigo a perseguir más cercano
-                    if (!w.position.Has(target)) continue;       // perdio pos. desde que lo detecté?
-
+                    if (!w.position.Has(target)) {
+                        w.ai_behaviour.Set(id,"idle");
+                        continue;       // perdio pos. desde que lo detecté?
+                    }
                     var (father, found) = Pathfinding.BFS(
                         w.game_map, w.aux_map,
                         w.position.Get(id),
@@ -37,7 +42,7 @@ public static class AIBehaviourSystem
                     var path = Pathfinding.GetPath(father, w.position.Get(id), found);
                     if (path.Count == 1)
                     {   //estoy al lado
-                        w.ai_behaviour.dense[i] = "melee_attack";
+                        w.ai_behaviour.Set(id, "melee_attack"); // usar dense quizas sea mas directo?
                     } else
                     {
                         // CASO ESTOY A MAS DE 1 CELDA ! ! ! !
@@ -52,7 +57,10 @@ public static class AIBehaviourSystem
                 if (w.ai_behaviour.dense[i] == "melee_attack" && finished == false)
                 {
                     int target = w.detected_enemies.Get(id)[0];  // el enemigo a perseguir más cercano
-                    if (!w.position.Has(target)) continue;       // perdio pos. desde que lo detecté?
+                    if (!w.position.Has(target)) {
+                        w.ai_behaviour.Set(id, "idle");
+                        continue;
+                    }       // perdio pos. desde que lo detecté?
                     int damage = IDManager.get_id();
                     AuxTypes.Damage damage_done = new AuxTypes.Damage // PLACEHOLDER
                     {
@@ -68,13 +76,13 @@ public static class AIBehaviourSystem
                     if (w.name.Has(target)) victim = w.name.Get(target);
                     w.announcement_list.Add(actor + " attacks " + victim + "!");
                     finished = true;
-                    w.ai_behaviour.dense[i] = "idle";
+                    w.ai_behaviour.dense[i] = "idle"; // inconsistencia, esto puede ser un Set. pero esto es mas rapido?
                 }
                     
                 if (w.ai_behaviour.dense[i] == "idle" && finished == false){
                     if(w.detected_enemies.Get(id).Count > 0)
                     {
-                        w.ai_behaviour.dense[i] = "chase";            
+                        w.ai_behaviour.dense[i] = "chase";      // inconsistencia, esto puede ser un Set. pero esto es mas rapido?      
                     } else
                     {
                         Random rng = new Random();
