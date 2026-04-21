@@ -72,6 +72,9 @@ public class World
         movement.Remove(id);
         energy.Remove(id);
         ai_behaviour.Remove(id);
+        has_turn.Remove(id);
+        speed.Remove(id);
+        name.Remove(id);
         ascii.Remove(id);
         map_blocks.Remove(id);
         alignment.Remove(id);
@@ -83,8 +86,23 @@ public class World
         attack_targets.Remove(id);
         damage.Remove(id);
         death_effect.Remove(id);
+        holding.Remove(id);
+        held_by.Remove(id);
+        remove_from_turn_list(id);
         IDManager.destroy(id);
         if (id == player) 
             {player = -1;}
+    }
+
+    public void remove_from_turn_list(int id)
+    {
+        // ajustar el índice actual porque voy a remover entidades del turn_order
+        int removedCountBefore = turn_order.Take(current_turn).Count(a => a == id); // cuántas ocurrencias de 'id' hay ANTES del turno actual
+        turn_order.RemoveAll(a => a == id); // elimina todas las ocurrencias del id
+        current_turn -= (short)removedCountBefore; // corro el índice hacia atrás si eliminé elementos previos
+        if (current_turn < 0) current_turn = 0; 
+        // si eliminé todo lo anterior y me fui a negativo, vuelvo al inicio
+        if (current_turn >= turn_order.Count) current_turn = 0; 
+        // si el índice quedó fuera de rango (ej: eliminé el último), vuelvo al inicio
     }
 }

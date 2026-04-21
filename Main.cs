@@ -96,7 +96,8 @@ while (true)
     
     RenderSystem.Run(w);
     if (w.tick % 10 == 0)
-        HealthSystem.Run(w); // IMPORTANTE DONDE VA ESTO (me curo antes de que me ataquen por ahora)
+        HealthSystem.Run(w); // correcto? toda unidad se cura luego de 10 ticks, no turnos...
+                             // deberia ser en base a turnos, regen, energy...
     SightDetectionSystem.Run(w);
     // EnergySystem.Run(w);
     // se deberian saltear si no tengo energia

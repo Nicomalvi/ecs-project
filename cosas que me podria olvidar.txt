@@ -1,5 +1,3 @@
--prox paso dificil: input + ia en un loop, que todo sea en turnos, se use bien la energia
-
 -ia mas compleja (agarrar items, roam si no hay nadie, como decido quien es enemigo?, como decido que ataque usar?)
 
 -HABILIDADES (desde morder hasta lanzar un item hasta lanzar una bola de fuego)
@@ -12,3 +10,9 @@ que atraviesan bien las paredes
 -usos de string a enum ahorran dolores de cabeza
 
 -si conozco dense[i], usar directo es mas rapido que Set? inseguro?
+
+-ACTUALIZAR DESTROY ENTITY CADA VEZ QUE AGREGO COMPONENTES
+
+-toda unidad se cura cada 10 ticks en vez de dependiendo de cuantos turnos pasaron
+
+-agregar chequeos de caso turn_order vacio (igual el juego con 0 entidades actuando seria aburrido!)

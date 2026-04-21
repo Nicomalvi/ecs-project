@@ -52,7 +52,7 @@ public static class Prefabs
         w.speed.Add(human, 6);
         w.ai_behaviour.Add(human, "idle");
         w.turn_order.Add(human);
-        w.turn_order.Add(human);
+        w.turn_order.Add(human); // estar 2 veces en la lista de turnos = actuar 2 veces por turno (no nec. seguidas)
 
         w.race.Add(human, AuxTypes.Race.human);
         w.alignment.Add(human, AuxTypes.Alingment.neutral);
