@@ -37,10 +37,32 @@ public static class RenderSystem
                         // no break: puede haber IA o jugador mas adelante
                     }
                 }
-                output.Append(current_cell); // fuera del loop de entidades
+                output.Append(current_cell);
             }
-            output.AppendLine();
+        output.AppendLine();
         }
+
+        // mensajes
+        if (w.announcement_list.Count > Config.MESSAGE_LINES)
+        {
+            int excess = w.announcement_list.Count - Config.MESSAGE_LINES;
+            w.announcement_list.RemoveRange(0, excess);
+            //hago rotacion: si no hay lugar para mensajes, saco los mas viejos
+        }
+        output.AppendLine();
+        for (int i = 0; i < Config.MESSAGE_LINES; i++)
+                {
+        string line = i < w.announcement_list.Count ? w.announcement_list[i] : "";
+        output.AppendLine(line.PadRight(Config.WIDTH));
+                }
+
+        // stats
+        output.AppendLine();
+        if (w.player != -1)
+        output.AppendLine($"Tick: {w.tick}  HP: {w.health.Get(w.player).current}        ");
+        else
+        output.AppendLine("PLAYER DIED :(:()                                         ");
+
         Console.Write(output.ToString());
     }
 }

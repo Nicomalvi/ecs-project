@@ -63,8 +63,12 @@ int human = Prefabs.Human(w);
 int sword = IDManager.get_id();
 w.ascii.Add(sword, '/');
 w.name.Add(sword, "sword");
-
+int shield = IDManager.get_id();
+w.ascii.Add(shield, '0');
+w.name.Add(shield, "shield");
+//w.map_blocks.Add(goblin, (false,false)); Con esto puedo agarrar y llevar al goblin !!!!
 MapUtils.AddToMap(w,sword,(17,17));
+MapUtils.AddToMap(w,shield,(17,17));
 MapUtils.AddToMap(w,goblin,(1,1));
 MapUtils.AddToMap(w,human,(17,15));
 // ============================================================================================
@@ -72,33 +76,13 @@ MapUtils.AddToMap(w,human,(17,15));
 // ============================================================================================
 Random rng = new Random();
 Console.CursorVisible = false;
-int tick = 0;
 w.player = human;
 w.ai_behaviour.Remove(human);
+
 while (true)
 {
     RenderSystem.Run(w);
-    // PANTALLA ============================================================================
-    Console.SetCursorPosition(0, Config.HEIGHT + 1);
-    for (int i = 0; i < Config.MESSAGE_LINES; i++)
-        Console.WriteLine(new string(' ', Console.WindowWidth));
-
-    // imprimir mensajes del turno anterior y limpiar
-    Console.SetCursorPosition(0, Config.HEIGHT + 1);
-    foreach (string msg in w.announcement_list)
-        Console.WriteLine(msg.PadRight(Console.WindowWidth));
-    w.announcement_list.Clear();
-    // PANTALLA ============================================================================
-    
-    // stats fijos
-    Console.SetCursorPosition(0, Config.HEIGHT + Config.MESSAGE_LINES + 2);
-    if (!(w.player == -1))
-        Console.WriteLine($"Tick {tick}  HP: {w.health.Get(w.player).current}        ");
-    else
-        Console.WriteLine("PLAYER DIED :(:(");
-
-
-    if (tick % 10 == 0)
+    if (w.tick % 10 == 0)
         HealthSystem.Run(w); // IMPORTANTE DONDE VA ESTO (me curo antes de que me ataquen por ahora)
     SightDetectionSystem.Run(w);
     EnergySystem.Run(w);
@@ -121,12 +105,6 @@ while (true)
     //Console.SetCursorPosition(0, Config.HEIGHT + 3);
     //Console.WriteLine($"mem: {GC.GetTotalMemory(false) / 1024f:F1} KB        ");
     // =============================================================================================
-    Console.SetCursorPosition(0, Config.HEIGHT + 2);
-    Console.WriteLine($"Tick {tick}");
-    Console.SetCursorPosition(0, Config.HEIGHT + 3);
-    if(!(w.player==-1))
-        Console.WriteLine($"PLAYER HEALTH {w.health.Get(w.player).current} !!!");
-        else Console.WriteLine("PLAYER DIED :(:()");
     Thread.Sleep(50);
-    tick ++;
+    w.tick ++;
 }

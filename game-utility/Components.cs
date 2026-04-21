@@ -45,7 +45,7 @@ public class World
     public List<int>[,]      game_map;
     public (int blocks_movement, int blocks_vision)[,] aux_map;
     // ===================================================================================================================================================
-
+    public int tick = 0;
     public List<string> announcement_list = new(); // los mensajes que agregan todos los sistemas
     // ahora mismo AddMesagge es muy facil, en un futuro solo se deberia agregar lo que el jugador puede percibir
 

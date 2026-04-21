@@ -1,0 +1,2 @@
+si para elegir mover (ia + input) chequeo que la suma de move_blocks no cambie nada, entonces pueden haber personajes intangibles 
+que atraviesan bien las paredes

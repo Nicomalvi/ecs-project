@@ -68,26 +68,32 @@ public static class InputSystem
             return;
         }
 
-        // mostrar menu de seleccion
-        Console.SetCursorPosition(0, Config.HEIGHT + 1);
-        Console.WriteLine("Pick up what?".PadRight(Console.WindowWidth));
+       // escribir menu
+        Console.SetCursorPosition(0, Config.INPUT_Y);
+        Console.Write("Pick up what?".PadRight(Console.WindowWidth));
+        Console.SetCursorPosition(0, Config.INPUT_Y + 1);
         for (int i = 0; i < items.Count; i++)
         {
             string name = w.name.Has(items[i]) ? w.name.Get(items[i]) : "unknown item";
-            char letter = (char)('a' + i);
-            Console.WriteLine($"  {letter}) {name}".PadRight(Console.WindowWidth));
+            Console.Write($"  {(char)('a'+i)}) {name}".PadRight(Console.WindowWidth));
+            Console.SetCursorPosition(0, Config.INPUT_Y + 2 + i);
         }
 
         // esperar seleccion
         while (true)
         {
             var key = Console.ReadKey(intercept: true).Key;
-            if (key == ConsoleKey.Escape) return;  // cancelar
+            if (key == ConsoleKey.Escape)
+            {
+                ClearInputZone(items.Count + 1);
+                return;  // cancelar
+            }
 
             int index = key - ConsoleKey.A;  // A=0, B=1, C=2...
             if (index >= 0 && index < items.Count)
             {
                 Actions.PickUp(w, w.player, items[index]);
+                ClearInputZone(items.Count + 1);
                 return;
             }
         }
@@ -95,9 +101,67 @@ public static class InputSystem
 
     static void HandleDrop(World w)
     {
-        // preguntar: cual id dropear? luego Action.Drop(player, id)
+        var pos = w.position.Get(w.player);
+        
+        // armar lista de items en la celda (sin el player)
+        var items = new List<int>();
+        foreach (int id in w.holding.Get(w.player))
+        {
+            if (w.ascii.Has(id)) items.Add(id);  // solo items con representacion visual
+        }
+
+        if (items.Count == 0)
+        {
+            w.announcement_list.Add("There is nothing to drop.");
+            return;
+        }
+
+        if (items.Count == 1)  // si hay solo 1, agarralo directo sin preguntar
+        {
+            Actions.Drop(w, w.player, items[0]);
+            return;
+        }
+
+        // escribir menu
+        Console.SetCursorPosition(0, Config.INPUT_Y);
+        Console.Write("Pick up what?".PadRight(Console.WindowWidth));
+        Console.SetCursorPosition(0, Config.INPUT_Y + 1);
+        for (int i = 0; i < items.Count; i++)
+        {
+            string name = w.name.Has(items[i]) ? w.name.Get(items[i]) : "unknown item";
+            Console.Write($"  {(char)('a'+i)}) {name}".PadRight(Console.WindowWidth));
+            Console.SetCursorPosition(0, Config.INPUT_Y + 2 + i);
+        }
+
+        // esperar seleccion
+        while (true)
+        {
+            var key = Console.ReadKey(intercept: true).Key;
+            if (key == ConsoleKey.Escape)
+            {
+                ClearInputZone(items.Count + 1);
+                return;  // cancelar
+            }
+
+            int index = key - ConsoleKey.A;  // A=0, B=1, C=2...
+            if (index >= 0 && index < items.Count)
+            {
+                Actions.Drop(w, w.player, items[index]);
+                ClearInputZone(items.Count + 1);
+                return;
+            }
+        }
     }
 
     static void HandleInventory(World w) { }
     static void HandleMenu(World w) { }
+    // limpiar menu 
+    static void ClearInputZone(int lines)
+    {
+        for (int i = 0; i < lines; i++)
+        {
+            Console.SetCursorPosition(0, Config.INPUT_Y + i);
+            Console.Write(new string(' ', Console.WindowWidth));
+        }
+    }
 }
