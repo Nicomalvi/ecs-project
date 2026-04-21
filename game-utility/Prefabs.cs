@@ -8,7 +8,7 @@ public static class Prefabs
         w.map_blocks.Add(goblin, (true,false));
 
         //w.energy.Add(goblin, (5,0,2));
-        w.ai_behaviour.Add(goblin, "chase");
+        w.ai_behaviour.Add(goblin, "idle");
 
         w.race.Add(goblin, AuxTypes.Race.orc);
         w.alignment.Add(goblin, AuxTypes.Alingment.chaotic);
