@@ -32,6 +32,7 @@ public static class Actions
     }
 
     // PickUpFrom: actor agarra item de una celda, sin necesariamente estar parado ahí. (con llamado correcto harian lo mismo)
+
     public static void Drop(World w, int actor_id, int item_id)
     {   
         string actor = "someone nameless";
@@ -56,5 +57,57 @@ public static class Actions
         w.held_by.Remove(item_id);
         actor_inventory.Remove(item_id); // clases se pasan por ref. no hace falta pasar de vuelta el inventario!
         w.announcement_list.Add(actor + " dropped " + item);
+    }
+
+    public static List<int> ChildrenWhoEquip(World w, int actor_id, AuxTypes.EquipmentType type)
+    {//interacciones futuras con size?
+        List<int> res = new List<int>();
+        void DFS(int id)
+        {
+            if (w.equipment.Has(id)) // parte del cuerpo actual puede equipar??
+            {
+                var equipment = w.equipment.Get(id);
+                foreach (var slot in equipment)
+                {
+                    if (slot.type == type && slot.item == -1)
+                    {
+                        res.Add(id);
+                        break; // esta parte ya sirve, no hace falta seguir
+                    }
+                }
+            }
+            // alguna parte del cuerpo conectada a mi puede equipar?
+            if (w.children.Has(id))
+            {
+                foreach (int child in w.children.Get(id))
+                {
+                    DFS(child);
+                }
+            }
+        }
+        DFS(actor_id);
+        return res;
+    }
+
+    public static void Equip(World w, int actor_id, int item_id) 
+    {
+        if (!w.equipment_type.Has(item_id))
+            return; // NO ES UN ITEM EQUIPABLE
+        var type = w.equipment_type.Get(item_id);
+        List<int> equippable = ChildrenWhoEquip(w, actor_id, type);
+        if (equippable.Count() == 0)
+            return; // NO PUEDES EQUIPAR ESTO (ya sea espacio ocupado o no hay espacio)
+        int body_part = equippable[0];
+        var slots = w.equipment.Get(body_part);
+        // chequear en cual slot meter
+        foreach (var slot in slots)
+        {
+            if (slot.type == type && slot.item == -1)
+            {
+                // equipar aca
+                // break
+                // cambiar held by? equipped?
+            }
+        }
     }
 }

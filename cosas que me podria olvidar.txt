@@ -20,3 +20,5 @@ que atraviesan bien las paredes
 -tipos de ia que chequeen TODO: Ej: if (soy el brazo de alguien enemigo -> atacar) 
                                     if (soy un arma inteligente de un enemigo -> salir del inventario) 
                                     if (soy un brazo y veo un enemigo -> meterme a su torso (enemigo pasa a tenerme de brazo))
+
+-items con varios tipos de equipamiento (ej, espada-casco se puede usar en cabeza o mano)
