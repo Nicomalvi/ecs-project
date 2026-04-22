@@ -1,4 +1,4 @@
-public struct SparseSet<T>{
+public class SparseSet<T>{
     // INVESTIGAR VIEW, BUILD, REBUILD
     // list vs array
     public int[][] sparse; //usare paginacion

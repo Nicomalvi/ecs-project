@@ -12,7 +12,7 @@ public class World
 
     public SparseSet<int> parent = new();                                          // para entidades con partes. si parent fuera lista...
     public SparseSet<List<int>> children = new();                                  // para entidades con partes
-    public SparseSet<List<(AuxTypes.EquipmentType type, int id)>> equipment_slots = new();   
+    public SparseSet<List<AuxTypes.EquipmentSlot>> equipment = new();  
     // [(tipo_slot, item que tengo), (tipo_slot, item que tengo)...]
     public SparseSet<AuxTypes.Size> size = new();                                  // combinado con otros comp., interacciones piola
 
@@ -78,7 +78,7 @@ public class World
 
         parent.Remove(id);
         children.Remove(id);
-        equipment_slots.Remove(id);
+        equipment.Remove(id);
         size.Remove(id);
         
         ascii.Remove(id);

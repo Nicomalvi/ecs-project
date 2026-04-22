@@ -1,42 +1,47 @@
 public static class Prefabs
 {
-    public static void Humanoid (World w, int id) //evito codigo repetido
+    public static void Humanoid(World w, int id)
     {
-        w.map_blocks.Add(id, (true,false));
+        w.map_blocks.Add(id, (true, false));
         w.speed.Add(id, 5);
         w.ai_behaviour.Add(id, AuxTypes.AiState.idle);
         w.turn_order.Add(id);
 
         w.holding.Add(id, new List<int>());
-        w.size.Add(id, AuxTypes.Size.average);
-        List<(AuxTypes.EquipmentType type, int id)> arm1_list = new List<(AuxTypes.EquipmentType type, int id)> {(AuxTypes.EquipmentType.arms,-1)};
-        List<(AuxTypes.EquipmentType type, int id)> arm2_list = new List<(AuxTypes.EquipmentType type, int id)> {(AuxTypes.EquipmentType.arms,-1)};
-        List<(AuxTypes.EquipmentType type, int id)> torso_list = new List<(AuxTypes.EquipmentType type, int id)> {(AuxTypes.EquipmentType.torso,-1)};
-        List<(AuxTypes.EquipmentType type, int id)> head_list = new List<(AuxTypes.EquipmentType type, int id)> {(AuxTypes.EquipmentType.head,-1)};
-        List<(AuxTypes.EquipmentType type, int id)> legs_list = new List<(AuxTypes.EquipmentType type, int id)> {(AuxTypes.EquipmentType.legs,-1)};
-        List<(AuxTypes.EquipmentType type, int id)> feet_list = new List<(AuxTypes.EquipmentType type, int id)> {(AuxTypes.EquipmentType.feet,-1)};
-        int arm1 = IDManager.get_id();
-        w.equipment_slots.Add(arm1,arm1_list);
-        int arm2 = IDManager.get_id();
-        w.equipment_slots.Add(arm2,arm2_list);
-        int head = IDManager.get_id();
-        w.equipment_slots.Add(head,head_list);
-        int torso = IDManager.get_id();
-        w.equipment_slots.Add(torso,torso_list);
-        int legs = IDManager.get_id();
-        w.equipment_slots.Add(legs,legs_list);
-        int feet = IDManager.get_id();
-        w.equipment_slots.Add(feet,feet_list);
+        w.size.Add(id, AuxTypes.Size.average);        
 
-        w.parent.Add(torso, id);
+        int torso = IDManager.get_id();
+        int head  = IDManager.get_id();
+        int arm1  = IDManager.get_id();
+        int arm2  = IDManager.get_id();
+        int legs  = IDManager.get_id();
+        int feet  = IDManager.get_id();
+
+        w.equipment.Add(torso, Slots(AuxTypes.EquipmentType.torso));
+        w.equipment.Add(head,  Slots(AuxTypes.EquipmentType.head));
+        w.equipment.Add(arm1,  Slots(AuxTypes.EquipmentType.arms, AuxTypes.EquipmentType.hands));
+        w.equipment.Add(arm2,  Slots(AuxTypes.EquipmentType.arms, AuxTypes.EquipmentType.hands));
+        w.equipment.Add(legs,  Slots(AuxTypes.EquipmentType.legs));
+        w.equipment.Add(feet,  Slots(AuxTypes.EquipmentType.feet));
+
+        // jerarquía
         w.children.Add(id, new List<int> { torso });
+        w.parent.Add(torso, id);
+
         w.children.Add(torso, new List<int> { head, arm1, arm2, legs, feet });
-        // ahora mismo brazos, piernas, cabeza no tienen children -> no pueden tener partes hijas..
+
         w.parent.Add(head, torso);
         w.parent.Add(arm1, torso);
         w.parent.Add(arm2, torso);
         w.parent.Add(legs, torso);
         w.parent.Add(feet, torso);
+
+        // inicializar children vacíos en hojas
+        w.children.Add(head, new List<int>());
+        w.children.Add(arm1, new List<int>());
+        w.children.Add(arm2, new List<int>());
+        w.children.Add(legs, new List<int>());
+        w.children.Add(feet, new List<int>());
     }
     public static int Goblin (World w)
     {
@@ -106,4 +111,13 @@ public static class Prefabs
 
         return human;
     }
+
+    //inicialziar facil lista de equipment slots
+    static List<AuxTypes.EquipmentSlot> Slots(params AuxTypes.EquipmentType[] types)
+        {
+            var list = new List<AuxTypes.EquipmentSlot>();
+            foreach (var t in types)
+                list.Add(new AuxTypes.EquipmentSlot { type = t, item = -1 });
+            return list;
+        }
 }

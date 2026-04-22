@@ -39,6 +39,11 @@ public static class AuxTypes
     {
         none
     }
+    public struct EquipmentSlot
+    {
+        public EquipmentType type;
+        public int item;
+    }
     public struct Attributes
     {
         public short strength;

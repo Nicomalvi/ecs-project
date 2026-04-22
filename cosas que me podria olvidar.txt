@@ -16,3 +16,7 @@ que atraviesan bien las paredes
 -toda unidad se cura cada 10 ticks en vez de dependiendo de cuantos turnos pasaron
 
 -agregar chequeos de caso turn_order vacio (igual el juego con 0 entidades actuando seria aburrido!)
+
+-tipos de ia que chequeen TODO: Ej: if (soy el brazo de alguien enemigo -> atacar) 
+                                    if (soy un arma inteligente de un enemigo -> salir del inventario) 
+                                    if (soy un brazo y veo un enemigo -> meterme a su torso (enemigo pasa a tenerme de brazo))
