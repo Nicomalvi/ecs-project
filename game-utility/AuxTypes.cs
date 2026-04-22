@@ -1,6 +1,6 @@
 public static class AuxTypes
 {
-    // LOS STRUCT NO SE MODIFICAN DE UNA, DEBO SETEARLOS DE VUELTA
+    
     public enum Alingment
     {
         chaotic,
@@ -13,6 +13,31 @@ public static class AuxTypes
         orc,
         elf,
         other
+    }
+    public enum AiState
+    {
+        idle,
+        chase,
+        melee_attack // accion?
+    }
+    public enum EquipmentType
+    {
+        head,
+        torso,
+        legs,
+        feet,
+        arms,
+        hands
+    }
+    public enum Size
+    {
+        tiny,       // rata
+        average,    // orco
+        giant       // dragon
+    }
+    public enum DeathEffect
+    {
+        none
     }
     public struct Attributes
     {
