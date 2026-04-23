@@ -63,6 +63,7 @@ int human = Prefabs.Human(w);
 int sword = IDManager.get_id();
 w.ascii.Add(sword, '/');
 w.name.Add(sword, "sword");
+w.equipment_type.Add(sword, AuxTypes.EquipmentType.hands);
 int shield = IDManager.get_id();
 w.ascii.Add(shield, '0');
 w.name.Add(shield, "shield");
@@ -84,7 +85,7 @@ while (true)
     if (w.current_turn == 0)
     {
         // 1. shuffle (Fisher-Yates)
-        for (int i = w.turn_order.Count() - 1; i > 0; i--)
+        for (int i = w.turn_order.Count - 1; i > 0; i--)
         {
             int j = Random.Shared.Next(i + 1);
             (w.turn_order[i], w.turn_order[j]) = (w.turn_order[j], w.turn_order[i]);
@@ -114,5 +115,5 @@ while (true)
     w.tick ++;
 
     w.current_turn ++;
-    if(w.current_turn == w.turn_order.Count()) w.current_turn = 0;
+    if(w.current_turn == w.turn_order.Count) w.current_turn = 0;
 }

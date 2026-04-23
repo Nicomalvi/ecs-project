@@ -24,6 +24,8 @@ public static class Prefabs
         w.equipment.Add(legs,  Slots(AuxTypes.EquipmentType.legs));
         w.equipment.Add(feet,  Slots(AuxTypes.EquipmentType.feet));
 
+        w.equipped_ids.Add(id, new List<int>());
+
         // jerarquía
         w.children.Add(id, new List<int> { torso });
         w.parent.Add(torso, id);

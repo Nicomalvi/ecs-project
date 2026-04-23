@@ -25,7 +25,7 @@ public static class InputSystem
 
             if (delta != (-99, -99))
             {
-                if (delta == (0, 0)) { w.movement.Set(w.player, (0,0)); return; }
+                if (delta == (0, 0)) { w.movement.Set(w.player, (0,0)); ClearInputZone(20); return; }
 
                 var pos = w.position.Get(w.player);
                 short nx = (short)(pos.x + delta.dx);
@@ -57,12 +57,16 @@ public static class InputSystem
                     continue;
                 }
                 w.movement.Set(w.player, delta);
+                ClearInputZone(20);
                 return;
             }
             // si llegue aca, la tecla no fue de movimiento
             // ACCIONES
-            if (key == ConsoleKey.G) { HandlePickup(w);    return; }   // consume turno
+            // deberian devolver un bool, que determina si consumir turno o no (asi drop cancelado no consume)
+            if (key == ConsoleKey.G) { HandlePickup(w);    return; }   // consume turno 
             if (key == ConsoleKey.H) { HandleDrop(w);    return; }     // consume turno
+            if (key == ConsoleKey.J) { HandleEquip(w);    return; }     // consume turno
+            if (key == ConsoleKey.K) { HandleUnequip(w);    return; }     // consume turno
             if (key == ConsoleKey.I) { HandleInventory(w); continue; } // no consume
             if (key == ConsoleKey.Escape) { HandleMenu(w); continue; } // no consume
         }
@@ -70,6 +74,7 @@ public static class InputSystem
     // ESTAS COSAS DEBERIAN PODERLAS HACER TODOS, NO SOLO EL PLAYER ==========================================================================
     static void HandlePickup(World w)
     {
+        ClearInputZone(20);
         var pos = w.position.Get(w.player);
         
         // armar lista de items en la celda (sin el player)
@@ -124,7 +129,8 @@ public static class InputSystem
     }
 
     static void HandleDrop(World w)
-    {        
+    {   
+        ClearInputZone(20);     
         // armar lista de items en el inventario
         var items = new List<int>();
         foreach (int id in w.holding.Get(w.player))
@@ -146,7 +152,7 @@ public static class InputSystem
 
         // escribir menu
         Console.SetCursorPosition(0, Config.INPUT_Y);
-        Console.Write("Pick up what?".PadRight(Console.WindowWidth));
+        Console.Write("Drop what?".PadRight(Console.WindowWidth));
         Console.SetCursorPosition(0, Config.INPUT_Y + 1);
         for (int i = 0; i < items.Count; i++)
         {
@@ -175,8 +181,120 @@ public static class InputSystem
         }
     }
 
-    static void HandleInventory(World w) { }
+    static void HandleInventory(World w)
+    {
+        ClearInputZone(20);
+        if (!w.holding.Has(w.player))
+        {
+            Console.SetCursorPosition(0, Config.INPUT_Y);
+            Console.Write("No inventory");
+            return;
+        } 
+        var inventory = w.holding.Get(w.player);
+        Console.SetCursorPosition(0, Config.INPUT_Y);
+        Console.Write("You have:");
+        // FALTA CASO INVENTARIO VACIO
+        for(int i = 0; i<inventory.Count; i++)
+        {
+            string name = "a nameless thing";
+            if(w.name.Has(inventory[i])) {name = w.name.Get(inventory[i]);}
+            Console.SetCursorPosition(0, Config.INPUT_Y+1+i);
+            Console.Write(name);
+        }
+        return;
+    }
     static void HandleMenu(World w) { }
+    static void HandleEquip(World w)
+    {
+        ClearInputZone(20); 
+        // listo los items equipables
+        // pregunto cual queres equipar
+        // recien ahi chequeo si es posible (mas adelante se puede resolver antes)
+        if(!w.holding.Has(w.player))
+        {
+            Console.SetCursorPosition(0, Config.INPUT_Y);
+            Console.Write("No inventory, can't store equipment!"); //raro, quizas podria equipar cosas del piso
+            return;
+        }
+        // armar lista de items en el inventario
+        var items = new List<int>();
+        foreach (int id in w.holding.Get(w.player))
+        {
+            if (w.equipment_type.Has(id)) items.Add(id);  // solo items equipables
+        }
+
+        if (items.Count == 0)
+        {
+
+            Console.SetCursorPosition(0, Config.INPUT_Y);
+            Console.Write("No equippable items!"); //raro, quizas podria equipar cosas del piso
+            return;
+        }
+
+        if (items.Count == 1)  // si hay solo 1, intento equipar
+        {
+            int item_id = items[0];
+            var possible_body_parts = Actions.ChildrenWhoEquip(w,w.player,w.equipment_type.Get(item_id));
+            if (possible_body_parts.Count == 0)
+            {
+                Console.SetCursorPosition(0, Config.INPUT_Y);
+                Console.Write("No available body parts".PadRight(Console.WindowWidth));
+                return;
+            }
+            // sino, puedo equipar
+            Actions.Equip(w, w.player, items[0]);
+            Console.SetCursorPosition(0, Config.INPUT_Y);
+            Console.Write("You equip the item".PadRight(Console.WindowWidth)); //placeholder
+            return;
+        }
+        /*
+        // escribir menu
+        Console.SetCursorPosition(0, Config.INPUT_Y);
+        Console.Write("Drop what?".PadRight(Console.WindowWidth));
+        Console.SetCursorPosition(0, Config.INPUT_Y + 1);
+        for (int i = 0; i < items.Count; i++)
+        {
+            string name = w.name.Has(items[i]) ? w.name.Get(items[i]) : "unknown item";
+            Console.Write($"  {(char)('a'+i)}) {name}".PadRight(Console.WindowWidth));
+            Console.SetCursorPosition(0, Config.INPUT_Y + 2 + i);
+        }
+
+        // esperar seleccion
+        while (true)
+        {
+            var key = Console.ReadKey(intercept: true).Key;
+            if (key == ConsoleKey.Escape)
+            {
+                ClearInputZone(items.Count + 1);
+                return;  // cancelar
+            }
+
+            int index = key - ConsoleKey.A;  // A=0, B=1, C=2...
+            if (index >= 0 && index < items.Count)
+            {
+                Actions.Drop(w, w.player, items[index]);
+                ClearInputZone(items.Count + 1);
+                return;
+            }
+        }
+        */
+    }
+    static void HandleUnequip(World w)
+    {
+        ClearInputZone(20); 
+        // listo los items equipables
+        // pregunto cual queres equipar
+        // recien ahi chequeo si es posible (mas adelante se puede resolver antes)
+        if(!w.holding.Has(w.player))
+        {
+            Console.SetCursorPosition(0, Config.INPUT_Y);
+            Console.Write("No inventory, can't store equipment!"); //raro, quizas podria equipar cosas del piso
+            return;
+        }
+        // PLACEHOLDER desequipo si tengo 1 item
+        List<int> equipped_items = w.equipped_ids.Get(w.player);
+        Actions.Unequip(w,w.player,equipped_items[0]);
+    }
     // limpiar menu 
     static void ClearInputZone(int lines)
     {

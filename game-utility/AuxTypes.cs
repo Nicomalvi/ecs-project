@@ -39,6 +39,7 @@ public static class AuxTypes
     {
         none
     }
+    // RECORDAR: STRUCT =/= CLASS, NO SE PASAN POR REF
     public struct EquipmentSlot
     {
         public EquipmentType type;

@@ -22,3 +22,10 @@ que atraviesan bien las paredes
                                     if (soy un brazo y veo un enemigo -> meterme a su torso (enemigo pasa a tenerme de brazo))
 
 -items con varios tipos de equipamiento (ej, espada-casco se puede usar en cabeza o mano)
+
+-action unequip no chequea errores, sabe de antemano que existe inventario, equipamiento...
+tomar este approach para resto de acciones?
+
+- drop/pickup cancelado consume turno
+
+-caso inventario vacio!

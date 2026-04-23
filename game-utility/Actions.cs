@@ -60,7 +60,7 @@ public static class Actions
     }
 
     public static List<int> ChildrenWhoEquip(World w, int actor_id, AuxTypes.EquipmentType type)
-    {//interacciones futuras con size?
+    {//devuelve lista de ids hijas con equipamiento disponible
         List<int> res = new List<int>();
         void DFS(int id)
         {
@@ -90,24 +90,71 @@ public static class Actions
     }
 
     public static void Equip(World w, int actor_id, int item_id) 
+        // TIPO DE USO: EQUIPO ALGO QUE ESTABA EN MI INVENTARIO, si no respeto llamados puedo romper, ej, equipar algo ya equipado)
+        // agrego a ids equipadas del cerebro, quito del inventario, agrego a slot de parte del cuerpo, agrego ref. item a parte del cuerpo,
+        // agrego de vuelta al inventario.
     {
+        string actor = "someone nameless";
+        if (w.name.Has(actor_id)) actor = w.name.Get(actor_id);
+        string item = "something nameless";
+        if (w.name.Has(item_id)) item = w.name.Get(item_id);
+
+        // CHEQUEOS POR LAS DUDAS ==============================
         if (!w.equipment_type.Has(item_id))
             return; // NO ES UN ITEM EQUIPABLE
+
+        if (w.equipped_by.Has(item_id)) return;
+        if (!w.holding.Get(actor_id).Contains(item_id)) return;
+        // =====================================================
+        
         var type = w.equipment_type.Get(item_id);
         List<int> equippable = ChildrenWhoEquip(w, actor_id, type);
-        if (equippable.Count() == 0)
+        if (equippable.Count == 0)
             return; // NO PUEDES EQUIPAR ESTO (ya sea espacio ocupado o no hay espacio)
-        int body_part = equippable[0];
+
+        int body_part = equippable[0]; // elijo la primera, en el futuro puedo permitir seleccion (brazo izq o tentaculo derecho ??)
         var slots = w.equipment.Get(body_part);
         // chequear en cual slot meter
-        foreach (var slot in slots)
+        for (int i = 0; i<slots.Count; i++)
         {
-            if (slot.type == type && slot.item == -1)
+            if (slots[i].type == type && slots[i].item == -1)
             {
-                // equipar aca
-                // break
-                // cambiar held by? equipped?
+                w.holding.Get(actor_id).Remove(item_id); // ya no esta en mi inventario
+                w.equipped_ids.Get(actor_id).Add(item_id);
+                w.equipped_by.Add(item_id, body_part);
+                w.held_by.Remove(item_id); // ya no estoy en inventario
+                var new_slot = slots[i];
+                new_slot.item = item_id;
+                slots[i] = new_slot;
+                w.announcement_list.Add(actor + " equips " + item);
+                return;                
             }
         }
+    }
+
+    public static void Unequip(World w, int actor_id, int item_id)
+    {   // TIPO DE USO: DESEQUIPO ALGO QUE YA SÉ QUE ESTÁ EQUIPADO (no voy a escribir errores del tipo !Has...)
+        // quito de lista de equipados del cerebro, quito del slot de la parte del cuerpo, quito referencia del item a la parte del cuerpo
+        string actor = "someone nameless";
+        if (w.name.Has(actor_id)) actor = w.name.Get(actor_id);
+        string item = "something nameless";
+        if (w.name.Has(item_id)) item = w.name.Get(item_id);
+
+        w.equipped_ids.Get(actor_id).Remove(item_id);
+        int owning_body_part = w.equipped_by.Get(item_id);
+        var equipment = w.equipment.Get(owning_body_part);
+        for (int i = 0; i<equipment.Count; i++)
+        {
+            if (equipment[i].item == item_id)
+            {
+                var used_slot = equipment[i];
+                used_slot.item = -1;
+                equipment[i] = used_slot;
+            }
+        }
+        w.equipped_by.Remove(item_id);
+        w.holding.Get(actor_id).Add(item_id);
+        w.held_by.Add(item_id, actor_id);
+        w.announcement_list.Add(actor + " unequips " + item);
     }
 }
