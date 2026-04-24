@@ -67,9 +67,15 @@ w.equipment_type.Add(sword, AuxTypes.EquipmentType.hands);
 int shield = IDManager.get_id();
 w.ascii.Add(shield, '0');
 w.name.Add(shield, "shield");
+w.equipment_type.Add(shield, AuxTypes.EquipmentType.hands);
+int dagger = IDManager.get_id();
+w.ascii.Add(dagger, '+');
+w.name.Add(dagger, "dagger");
+w.equipment_type.Add(dagger, AuxTypes.EquipmentType.hands);
 //w.map_blocks.Add(goblin, (false,false)); Con esto puedo agarrar y llevar al goblin !!!!
 MapUtils.AddToMap(w,sword,(17,17));
 MapUtils.AddToMap(w,shield,(17,17));
+MapUtils.AddToMap(w,dagger,(17,17));
 MapUtils.AddToMap(w,goblin,(1,1));
 MapUtils.AddToMap(w,human,(17,15));
 // ============================================================================================
@@ -103,6 +109,8 @@ while (true)
     // EnergySystem.Run(w);
     // se deberian saltear si no tengo energia
     // entonces los ticks siguen pasando pero yo no tuve turno, lo mismo para la IA
+
+    // input y AI pueden ir dentro de if existen turnos
     InputSystem.Run(w);
     AIBehaviourSystem.Run(w);
     MovementSystem.Run(w);
