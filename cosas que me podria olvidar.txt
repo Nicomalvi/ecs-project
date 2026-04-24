@@ -1,31 +1,42 @@
+===========================================
+Para No Olvidar
+===========================================
+-ACTUALIZAR DESTROY ENTITY CADA VEZ QUE AGREGO COMPONENTES
+
+-action unequip no chequea errores, sabe de antemano que existe inventario, equipamiento...
+tomar este approach para resto de acciones?
+
+- acciones deberian chequear si entidad llamadora es raiz? 
+ejemplo: mano llama a pickup -> funcion se encarga de que los datos modificados sean en el cerebro, no la mano
+===========================================
+en orden de importancia... cosas que hacer
+===========================================
+-PASAR DAMAGE A UNA ACCION!!
+
+-el BFS de detectar enemigos podria tambien marcar el proximo paso hacia todos, para no hacer varios BFS innecesarios
+
+- drop/pickup cancelado consume turno
+
 -ia mas compleja (agarrar items, roam si no hay nadie, como decido quien es enemigo?, como decido que ataque usar?)
+-tipos de ia que chequeen TODO: Ej: if (soy el brazo de alguien enemigo -> atacar) 
+                                    if (soy un arma inteligente de un enemigo -> salir del inventario) 
+                                    if (soy un brazo y veo un enemigo -> meterme a su torso (enemigo pasa a tenerme de brazo))
 
 -HABILIDADES (desde morder hasta lanzar un item hasta lanzar una bola de fuego)
 
 -si para elegir mover (ia + input) chequeo que la suma de move_blocks no cambie nada, entonces pueden haber personajes intangibles 
 que atraviesan bien las paredes
 
--el BFS de detectar enemigos podria tambien marcar el proximo paso hacia todos, para no hacer varios BFS innecesarios
-
--[AREGLADO?]usos de string a enum ahorran dolores de cabeza
-
 -si conozco dense[i], usar directo es mas rapido que Set? inseguro?
-
--ACTUALIZAR DESTROY ENTITY CADA VEZ QUE AGREGO COMPONENTES
 
 -toda unidad se cura cada 10 ticks en vez de dependiendo de cuantos turnos pasaron
 
 -agregar chequeos de caso turn_order vacio (igual el juego con 0 entidades actuando seria aburrido!)
 
--tipos de ia que chequeen TODO: Ej: if (soy el brazo de alguien enemigo -> atacar) 
-                                    if (soy un arma inteligente de un enemigo -> salir del inventario) 
-                                    if (soy un brazo y veo un enemigo -> meterme a su torso (enemigo pasa a tenerme de brazo))
-
 -items con varios tipos de equipamiento (ej, espada-casco se puede usar en cabeza o mano)
 
--action unequip no chequea errores, sabe de antemano que existe inventario, equipamiento...
-tomar este approach para resto de acciones?
-
-- drop/pickup cancelado consume turno
-
-- inputs del jugador en while true -> el juego se frena COMPLETAMENTE (no animaciones)
+-inputs del jugador en while true -> el juego se frena COMPLETAMENTE (no animaciones)
+===========================================
+cosas arregladas!
+=================
+-usos de string a enum ahorran dolores de cabeza
