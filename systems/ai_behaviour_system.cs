@@ -67,14 +67,7 @@ public static class AIBehaviourSystem
                         amount = 1,
                         type = "phys"
                     };
-                    w.damage.Add(damage, damage_done);
-                    w.attack_targets.Add(damage, new List<int> { target });
-
-                    string actor = "someone nameless";
-                    if (w.name.Has(id)) actor = w.name.Get(id);
-                    string victim = "someone nameless";
-                    if (w.name.Has(target)) victim = w.name.Get(target);
-                    w.announcement_list.Add(actor + " attacks " + victim + "!");
+                    Actions.MeleeAttack(w,id,target);
                     finished = true;
                     w.ai_behaviour.dense[i] = AuxTypes.AiState.idle; // inconsistencia, esto puede ser un Set. pero esto es mas rapido?
                 }

@@ -19,7 +19,7 @@ public static class Prefabs
 
         w.equipment.Add(torso, Slots(AuxTypes.EquipmentType.torso));
         w.equipment.Add(head,  Slots(AuxTypes.EquipmentType.head));
-        w.equipment.Add(arm1,  Slots(AuxTypes.EquipmentType.arms, AuxTypes.EquipmentType.hands));
+        w.equipment.Add(arm1,  Slots(AuxTypes.EquipmentType.arms, AuxTypes.EquipmentType.hands, AuxTypes.EquipmentType.melee_weapon));
         w.equipment.Add(arm2,  Slots(AuxTypes.EquipmentType.arms, AuxTypes.EquipmentType.hands));
         w.equipment.Add(legs,  Slots(AuxTypes.EquipmentType.legs));
         w.equipment.Add(feet,  Slots(AuxTypes.EquipmentType.feet));
@@ -62,8 +62,8 @@ public static class Prefabs
         };
         AuxTypes.Health goblin_health = new AuxTypes.Health
         {
-            current = 5,
-            max = 5,
+            current = 10,
+            max = 10,
             regeneration = 1 // si es por turno deberia ser poca y max mucha...
         };
         AuxTypes.Sight sight = new AuxTypes.Sight

@@ -63,7 +63,15 @@ int human = Prefabs.Human(w);
 int sword = IDManager.get_id();
 w.ascii.Add(sword, '/');
 w.name.Add(sword, "sword");
-w.equipment_type.Add(sword, AuxTypes.EquipmentType.hands);
+w.equipment_type.Add(sword, AuxTypes.EquipmentType.melee_weapon);
+AuxTypes.Attributes attributes = new AuxTypes.Attributes
+    {
+        strength = 5,
+        constitution = 0,
+        intelligence = 0
+    };
+w.attributes.Add(sword, attributes);
+
 int shield = IDManager.get_id();
 w.ascii.Add(shield, '0');
 w.name.Add(shield, "shield");

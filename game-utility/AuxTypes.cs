@@ -27,7 +27,8 @@ public static class AuxTypes
         legs,
         feet,
         arms,
-        hands
+        hands,
+        melee_weapon
     }
     public enum Size
     {

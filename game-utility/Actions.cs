@@ -236,9 +236,28 @@ public static class Actions
     //=============================================================================================
     // Ataques
     //=============================================================================================
+    // solo hay que elegir cantidad de daño
+    // Empecemos por Strength + Daño Arma (mas daelante item_effects, ej. guantes de poder, o eso va en on_equip?)
     public static void MeleeAttack(World w, int actor_id, int target_id)
     {
-        
-    
+        short actor_strength = w.attributes.Get(actor_id).strength;
+        List<int> weapon_list = GetAllEquippedItems(w,actor_id)
+            .Where(id => w.equipment_type.Get(id)==AuxTypes.EquipmentType.melee_weapon)
+            .ToList();
+        short weapon_strength = 0;
+        for (int i = 0; i<weapon_list.Count; i++)
+        {
+            if(w.attributes.Has(weapon_list[i])){weapon_strength+=w.attributes.Get(weapon_list[i]).strength;}
+            // sumo a la fuerza del actor la fuerza de todas sus armas melee
+        }
+        int damage = IDManager.get_id();
+        AuxTypes.Damage damage_done = new AuxTypes.Damage
+        {
+            amount = (short)(actor_strength+weapon_strength),
+            type = "phys"
+        };
+        w.damage.Add(damage, damage_done);
+        w.attack_targets.Add(damage, new List<int> { target_id });
+        w.announcement_list.Add(Name(w,actor_id) + " attacks " + Name(w,target_id) + " for " + damage_done.amount);
     }
 }

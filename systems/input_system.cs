@@ -35,21 +35,7 @@ public static class InputSystem
                         if ((w.race.Has(cell_id) && !(w.race.Get(cell_id) == w.race.Get(w.player))) || 
                         (w.alignment.Has(cell_id) && !(w.alignment.Get(cell_id) == w.alignment.Get(w.player))))
                         {
-                            // si estoy intentando moverme hacia enemigo -> atacar
-                            // CODIGO REPETIDO DE AI_BEHAVIOUR... SE PUEDE HACER UNA FUNCION ---------------------------------------------------
-                            int damage = IDManager.get_id();
-                            AuxTypes.Damage damage_done = new AuxTypes.Damage // PLACEHOLDER
-                            {
-                                amount = 1,
-                                type = "phys"
-                            };
-                            w.damage.Add(damage, damage_done);
-                            w.attack_targets.Add(damage, new List<int> { cell_id });
-
-                            string actor = "you";
-                            string victim = "someone nameless";
-                            if (w.name.Has(cell_id)) victim = w.name.Get(cell_id);
-                            w.announcement_list.Add(actor + " attacks " + victim + "!");
+                            Actions.MeleeAttack(w,w.player,cell_id);
                             return;
                         }
                     }
