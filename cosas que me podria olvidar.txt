@@ -11,11 +11,13 @@ ejemplo: mano llama a pickup -> funcion se encarga de que los datos modificados 
 ===========================================
 en orden de importancia... cosas que hacer
 ===========================================
--PASAR DAMAGE A UNA ACCION!!
+-equipar, desequipar cosas actualiza un comp. equipamiento
+    luego atacar, usar items lee de ese equipamiento, no mira todo el arbol nuevamente
+    (salva un poco del ECS puro)
 
 -el BFS de detectar enemigos podria tambien marcar el proximo paso hacia todos, para no hacer varios BFS innecesarios
 
-- drop/pickup cancelado consume turno
+- drop/pickup cancelado NO debe consumir turno
 
 -ia mas compleja (agarrar items, roam si no hay nadie, como decido quien es enemigo?, como decido que ataque usar?)
 -tipos de ia que chequeen TODO: Ej: if (soy el brazo de alguien enemigo -> atacar) 
@@ -36,7 +38,9 @@ que atraviesan bien las paredes
 -items con varios tipos de equipamiento (ej, espada-casco se puede usar en cabeza o mano)
 
 -inputs del jugador en while true -> el juego se frena COMPLETAMENTE (no animaciones)
+    si no consumo el turno del jugador hasta que toque algo se arregla
 ===========================================
 cosas arregladas!
 =================
 -usos de string a enum ahorran dolores de cabeza
+-PASAR DAMAGE A UNA ACCION!!

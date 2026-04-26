@@ -40,11 +40,20 @@ public static class AuxTypes
     {
         none
     }
+    public enum ActionType {
+    pickup, drop, equip, unequip, melee_attack
+    }
     // RECORDAR: STRUCT =/= CLASS, NO SE PASAN POR REF
     public struct EquipmentSlot
     {
         public EquipmentType type;
         public int item;
+    }
+    public struct PendingAction
+    {
+        public List<int> target_ids;
+        public ActionType type;
+        
     }
     public struct Attributes
     {

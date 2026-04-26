@@ -75,7 +75,11 @@ public static class InputSystem
         // por las dudas 
         // condicion ? caso true : caso false
         if (chosen == -1) return;
-        Actions.PickUp(w, w.player, chosen);
+        w.pending_actions.Add(w.player, new AuxTypes.PendingAction
+        {
+            type = AuxTypes.ActionType.pickup,
+            target_ids = new List<int> { chosen }
+        });
     }
 
     static void HandleDrop(World w)
@@ -91,7 +95,11 @@ public static class InputSystem
         }
         int chosen = items.Count == 1 ? items[0] : ChooseFromList(w, items, "Drop what?");
         if (chosen == -1) return;
-        Actions.Drop(w, w.player, chosen);
+        w.pending_actions.Add(w.player, new AuxTypes.PendingAction
+        {
+            type = AuxTypes.ActionType.drop,
+            target_ids = new List<int> { chosen }
+        });
     }
 
    static void HandleInventory(World w)
@@ -151,7 +159,11 @@ public static class InputSystem
             WriteLine(0, "No available body parts");
             return;
         }
-        Actions.Equip(w, w.player, chosen);
+        w.pending_actions.Add(w.player, new AuxTypes.PendingAction
+        {
+            type = AuxTypes.ActionType.equip,
+            target_ids = new List<int> { chosen }
+        });
     }
     static void HandleUnequip(World w)
     {
@@ -160,7 +172,11 @@ public static class InputSystem
         if (items.Count == 0) return;
         int chosen = items.Count == 1 ? items[0] : ChooseFromList(w, items, "Unequip what?");
         if (chosen == -1) return;
-        Actions.Unequip(w, w.player, chosen);
+        w.pending_actions.Add(w.player, new AuxTypes.PendingAction
+        {
+            type = AuxTypes.ActionType.unequip,
+            target_ids = new List<int> { chosen }
+        });
     }
     //=========================================================================================================
     // funciones UI

@@ -16,7 +16,7 @@ public static class AIBehaviourSystem
             {
                 if (w.ai_behaviour.dense[i] == AuxTypes.AiState.chase && finished == false) 
                 {
-                    if (!w.position.Has(id) || !w.movement.Has(id) || !w.detected_enemies.Has(id) || w.detected_enemies.Get(id).Count == 0) 
+                    if (!w.position.Has(id) || !w.detected_enemies.Has(id) || w.detected_enemies.Get(id).Count == 0) 
                     {
                         w.ai_behaviour.Set(id,AuxTypes.AiState.idle);
                         continue;
@@ -61,19 +61,17 @@ public static class AIBehaviourSystem
                         w.ai_behaviour.Set(id, AuxTypes.AiState.idle);
                         continue;
                     }       // perdio pos. desde que lo detecté?
-                    int damage = IDManager.get_id();
-                    AuxTypes.Damage damage_done = new AuxTypes.Damage // PLACEHOLDER
+                    w.pending_actions.Add(id, new AuxTypes.PendingAction
                     {
-                        amount = 1,
-                        type = "phys"
-                    };
-                    Actions.MeleeAttack(w,id,target);
+                        type = AuxTypes.ActionType.melee_attack,
+                        target_ids = new List<int> { target }
+                    });
                     finished = true;
                     w.ai_behaviour.dense[i] = AuxTypes.AiState.idle; // inconsistencia, esto puede ser un Set. pero esto es mas rapido?
                 }
                     
                 if (w.ai_behaviour.dense[i] == AuxTypes.AiState.idle && finished == false){
-                    if(w.detected_enemies.Get(id).Count > 0)
+                    if(w.detected_enemies.Has(id) && w.detected_enemies.Get(id).Count > 0)
                     {
                         w.ai_behaviour.dense[i] = AuxTypes.AiState.chase;      // inconsistencia, esto puede ser un Set. pero esto es mas rapido?      
                     } else

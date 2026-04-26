@@ -20,7 +20,7 @@ public static class Prefabs
         w.equipment.Add(torso, Slots(AuxTypes.EquipmentType.torso));
         w.equipment.Add(head,  Slots(AuxTypes.EquipmentType.head));
         w.equipment.Add(arm1,  Slots(AuxTypes.EquipmentType.arms, AuxTypes.EquipmentType.hands, AuxTypes.EquipmentType.melee_weapon));
-        w.equipment.Add(arm2,  Slots(AuxTypes.EquipmentType.arms, AuxTypes.EquipmentType.hands));
+        w.equipment.Add(arm2,  Slots(AuxTypes.EquipmentType.arms, AuxTypes.EquipmentType.hands, AuxTypes.EquipmentType.melee_weapon));
         w.equipment.Add(legs,  Slots(AuxTypes.EquipmentType.legs));
         w.equipment.Add(feet,  Slots(AuxTypes.EquipmentType.feet));
 
@@ -86,7 +86,7 @@ public static class Prefabs
         w.name.Add(human, "human");
 
         w.speed.Set(human, 6);
-        w.turn_order.Add(human); // estar 2 veces en la lista de turnos = actuar 2 veces por turno (no nec. seguidas)
+        //w.turn_order.Add(human); // estar 2 veces en la lista de turnos = actuar 2 veces por turno (no nec. seguidas)
         w.race.Add(human, AuxTypes.Race.human);
         w.alignment.Add(human, AuxTypes.Alingment.neutral);
         AuxTypes.Attributes attributes = new AuxTypes.Attributes

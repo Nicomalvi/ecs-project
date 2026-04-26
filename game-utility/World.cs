@@ -17,6 +17,7 @@ public class World
     //=====================================================================================================================================
     public SparseSet<AuxTypes.Energy> energy = new();                              // energia
     public SparseSet<AuxTypes.AiState> ai_behaviour = new();                       // FSM?
+    public SparseSet<AuxTypes.PendingAction> pending_actions = new();              // que voy a hacer este turno?
     public SparseSet<bool> has_turn = new();                                       // ia + me toca (+ tengo energia?) = actuar
     public SparseSet<short> speed = new();                                         // util para generar turnos
     public SparseSet<string> name = new();                                         // claridad para el player
@@ -95,6 +96,7 @@ public class World
         size.Remove(id);
         equipped_ids.Remove(id);
         equipped_in.Remove(id);
+        pending_actions.Remove(id);
         
         ascii.Remove(id);
         map_blocks.Remove(id);
