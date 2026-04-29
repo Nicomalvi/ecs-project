@@ -2,7 +2,7 @@ public static class InputSystem
 {
     public static void Run(World w)
     {
-        if (w.player == -1 || !(w.turn_order[w.current_turn] == w.player)) return;
+        if (w.player == -1) return;
 
         while (true)
         {

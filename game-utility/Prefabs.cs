@@ -5,7 +5,6 @@ public static class Prefabs
         w.map_blocks.Add(id, (true, false));
         w.speed.Add(id, 5);
         w.ai_behaviour.Add(id, AuxTypes.AiState.idle);
-        w.turn_order.Add(id);
 
         w.holding.Add(id, new List<int>());
         w.size.Add(id, AuxTypes.Size.average);        

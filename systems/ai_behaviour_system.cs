@@ -12,7 +12,7 @@ public static class AIBehaviourSystem
             // elijo a la entidad que puedo ver mas cerca
             // si estoy al lado          -> genero damage
             // si estoy a más de un paso -> genero 1 paso del camino mínimo
-            while(!finished && w.turn_order[w.current_turn]==id)
+            while(!finished)
             {
                 if (w.ai_behaviour.dense[i] == AuxTypes.AiState.chase && finished == false) 
                 {

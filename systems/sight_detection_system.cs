@@ -5,8 +5,7 @@ public static class SightDetectionSystem
         for (int i = 0; i < w.sight.dense.Count; i++)
         { // asumo que habra mas enemigos con vision que posicion, necesito ambas para calcular
             int id = w.sight.valid_ids[i];
-            if (w.turn_order[w.current_turn]!=id || // si no es mi turno..
-            !w.position.Has(id) || w.sight.dense[i].sight == false || // si no tengo pos o vision...
+            if (!w.position.Has(id) || w.sight.dense[i].sight == false || // si no tengo pos o vision...
             (w.player != -1 && id == w.player)){continue;} //si soy el player.. (la vision es el render!)
 
             List<int> seen_enemies =  Pathfinding.BFS_Detect(

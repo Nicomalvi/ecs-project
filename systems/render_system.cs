@@ -1,3 +1,4 @@
+using Raylib_cs;
 public static class RenderSystem
 // parece ser de lo que más gasta memoria?
 // FUTURA OPTIMIZACION ==========================================
@@ -6,6 +7,10 @@ public static class RenderSystem
 {
     public static void Run(World w)
     {
+        Raylib.BeginDrawing();
+        Raylib.ClearBackground(Color.Black);
+
+
         Console.SetCursorPosition(0, 0);
         var output = new System.Text.StringBuilder();
         // imprimo la primer entidad con ia y ascii que encuentre. sino, la primera con ascii. sino, el piso.
@@ -37,6 +42,10 @@ public static class RenderSystem
                         // no break: puede haber IA o jugador mas adelante
                     }
                 }
+
+                int cellSize = 24;
+                Raylib.DrawText(current_cell.ToString(), x*cellSize, y*cellSize, cellSize, Color.White);
+
                 output.Append(current_cell);
             }
         output.AppendLine();
@@ -64,5 +73,7 @@ public static class RenderSystem
         output.AppendLine("PLAYER DIED :(:()                                         ");
 
         Console.Write(output.ToString());
+
+        Raylib.EndDrawing();
     }
 }

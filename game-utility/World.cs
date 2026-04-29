@@ -60,8 +60,6 @@ public class World
     //=====================================================================================================================================
     // Informacion global útil por nivel
     //=====================================================================================================================================
-    public List<int> turn_order = new(); // lista de id's que quieren actuar, ordenada
-    public short current_turn = 0;
     public List<int>[,] game_map;
     public (int blocks_movement, int blocks_vision)[,] aux_map;
     public int tick = 0;
@@ -115,21 +113,9 @@ public class World
         holding.Remove(id);
         held_by.Remove(id);
 
-        remove_from_turn_list(id);
         IDManager.destroy(id);
         if (id == player) 
             {player = -1;}
     }
 
-    public void remove_from_turn_list(int id)
-    {
-        // ajustar el índice actual porque voy a remover entidades del turn_order
-        int removedCountBefore = turn_order.Take(current_turn).Count(a => a == id); // cuántas ocurrencias de 'id' hay ANTES del turno actual
-        turn_order.RemoveAll(a => a == id); // elimina todas las ocurrencias del id
-        current_turn -= (short)removedCountBefore; // corro el índice hacia atrás si eliminé elementos previos
-        if (current_turn < 0) current_turn = 0; 
-        // si eliminé todo lo anterior y me fui a negativo, vuelvo al inicio
-        if (current_turn >= turn_order.Count) current_turn = 0; 
-        // si el índice quedó fuera de rango (ej: eliminé el último), vuelvo al inicio
-    }
 }
