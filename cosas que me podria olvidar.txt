@@ -1,46 +1,16 @@
 ===========================================
 Para No Olvidar
 ===========================================
--ACTUALIZAR DESTROY ENTITY CADA VEZ QUE AGREGO COMPONENTES
 
--action unequip no chequea errores, sabe de antemano que existe inventario, equipamiento...
-tomar este approach para resto de acciones?
-
-- acciones deberian chequear si entidad llamadora es raiz? 
-ejemplo: mano llama a pickup -> funcion se encarga de que los datos modificados sean en el cerebro, no la mano
+- CONSIDERAR structs como AI BUNDLE o PHYSICS BUNDLE, SoA e iterar sobre eso para volver a la cache friendly
+- CONSIDERAR arrays con tamaños fijos para grupos? ej. , en movement[1000] a movement[3000] habra solo IDS que tambien tienen
+- position, IA, velocidad. De esta manera se puedo iterar de forma contigua varios arrays a la vez. 
+- CONSIDERAR un poco de cache locality sigue siendo mejor que nada :D
+- ACTUALIZAR DESTROY ENTITY CADA VEZ QUE AGREGO COMPONENTES
+- en vez de una hitbox, si tengo lista de hitboxes pueden haber colisiones complejas
 ===========================================
 en orden de importancia... cosas que hacer
 ===========================================
--equipar, desequipar cosas actualiza un comp. equipamiento
-    luego atacar, usar items lee de ese equipamiento, no mira todo el arbol nuevamente
-    (salva un poco del ECS puro)
-
--el BFS de detectar enemigos podria tambien marcar el proximo paso hacia todos, para no hacer varios BFS innecesarios
-
-- drop/pickup cancelado NO debe consumir turno
-
--ia mas compleja (agarrar items, roam si no hay nadie, como decido quien es enemigo?, como decido que ataque usar?)
--tipos de ia que chequeen TODO: Ej: if (soy el brazo de alguien enemigo -> atacar) 
-                                    if (soy un arma inteligente de un enemigo -> salir del inventario) 
-                                    if (soy un brazo y veo un enemigo -> meterme a su torso (enemigo pasa a tenerme de brazo))
-
--HABILIDADES (desde morder hasta lanzar un item hasta lanzar una bola de fuego)
-
--si para elegir mover (ia + input) chequeo que la suma de move_blocks no cambie nada, entonces pueden haber personajes intangibles 
-que atraviesan bien las paredes
-
--si conozco dense[i], usar directo es mas rapido que Set? inseguro?
-
--toda unidad se cura cada 10 ticks en vez de dependiendo de cuantos turnos pasaron
-
--agregar chequeos de caso turn_order vacio (igual el juego con 0 entidades actuando seria aburrido!)
-
--items con varios tipos de equipamiento (ej, espada-casco se puede usar en cabeza o mano)
-
--inputs del jugador en while true -> el juego se frena COMPLETAMENTE (no animaciones)
-    si no consumo el turno del jugador hasta que toque algo se arregla
 ===========================================
 cosas arregladas!
 =================
--usos de string a enum ahorran dolores de cabeza
--PASAR DAMAGE A UNA ACCION!!
