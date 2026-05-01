@@ -1,22 +1,22 @@
 using Raylib_cs;
 public static class MovementSystem
 {
-    public static void Run(World W)
+    public static void Run(World w)
     {
-        var movementComponents = W.MovementComponent;
+        var movementComponents = w.MovementComponent;
         for (int i = 0; i < movementComponents.dense.Count; i++) // estoy iterando sobre los que tienen w.movement
         {
             int id = movementComponents.valid_ids[i];
             // sumo a pos, chequeo si choca alguna hitbox, lo dejo en 0?
             var movementComponent = movementComponents.Get(id);
-            var physicsComponent = W.PhysicsComponent.Get(id); // id = valor "real" de i
+            var physicsComponent = w.PhysicsComponent.Get(id); // id = valor "real" de i
 
             // si choco con otra hitbox, me quedo quieto o lo mas cerca posible?
             // por ahora quieto
 
-            float dt = Raylib.GetFrameTime();
-            float newX = physicsComponent.x + movementComponent.vx;
-            float newY = physicsComponent.y + movementComponent.vy;
+            float dt = Raylib.GetFrameTime(); // necesario para comportamiento independiente de frame length
+            float newX = physicsComponent.x + movementComponent.vx * dt;
+            float newY = physicsComponent.y + movementComponent.vy * dt;
 
             // offset hitboxes es 0 por ahora, no lo tengo en cuenta
 
@@ -28,30 +28,52 @@ public static class MovementSystem
 
             // tamaño en tiles de la hitbox de esta entidad
             int newCellXEnd = (int)((newX + physicsComponent.width) / Config.CELL_SIZE);
+            int newCellYEnd = (int)((newY + physicsComponent.height) / Config.CELL_SIZE);
 
-            for (int j = 0; j<= newCellXEnd; j++)
+            var newPhysicsComponent = physicsComponent;
+            var nullMovement = new AuxTypes.MovementComponent {vx = 0, vy = 0};
+            newPhysicsComponent.x = newX;
+            for (int j = newCellX; j<= newCellXEnd; j++)
             {
-                // paso por las tiles que ocupara mi hitbox si me muevo horizontalmente para cheq. colision
-                List<int> entitiesInMap = W.GameMap[newCellX + j, oldCellY];
+                // chequeo colisiones hitbox si me muevo HORIZONTALMENTE
+                List<int> entitiesInMap = w.GameMap[j, oldCellY];
                 foreach (int entityInMap in entitiesInMap)
                 {
                     if (entityInMap == id) continue;
-                    var EntityphysicsComponent = W.PhysicsComponent.Get(entityInMap);
-                    bool collides = CollisionCheck(physicsComponent, EntityphysicsComponent);
+                    var EntityphysicsComponent = w.PhysicsComponent.Get(entityInMap);
+                    bool collides = CollisionCheck(newPhysicsComponent, EntityphysicsComponent);
                     if (collides)
                     {
-                        W.MovementComponent.Remove(id);
+                        w.MovementComponent.Set(id, nullMovement);
                         return;
                     }
                 }
             }
             // si llegue hasta aca, no hubo colisiones en el eje X
-            W.MovementComponent.Remove(id);
+            w.PhysicsComponent.Set(id, newPhysicsComponent);
+            newPhysicsComponent.y = newY;
+            for (int j = newCellY; j<= newCellYEnd; j++)
+            {
+                // paso por las tiles que ocupara mi hitbox si me muevo VERTICALMENTE para cheq. colision
+                List<int> entitiesInMap = w.GameMap[newCellX, j];
+                foreach (int entityInMap in entitiesInMap)
+                {
+                    if (entityInMap == id) continue;
+                    var EntityphysicsComponent = w.PhysicsComponent.Get(entityInMap);
+                    bool collides = CollisionCheck(newPhysicsComponent, EntityphysicsComponent);
+                    if (collides)
+                    {
+                        Console.WriteLine("!!!!!!!!!!!!!!!!!!!!!!1");
+                        w.MovementComponent.Set(id, nullMovement);
+                        return;
+                    }
+                }
+            }
 
-            physicsComponent.x = newX;
-            W.PhysicsComponent.Set(id, physicsComponent);
-            MapUtils.RemovePhysicalFromMap(W, id);
-            MapUtils.AddPhysicalToMap(W, id);
+            w.PhysicsComponent.Set(id, newPhysicsComponent);
+            w.MovementComponent.Set(id, nullMovement);
+            MapUtils.RemovePhysicalFromMap(w, id);
+            MapUtils.AddPhysicalToMap(w, id);
         }
     }
 

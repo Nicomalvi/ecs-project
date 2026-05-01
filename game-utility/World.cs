@@ -6,8 +6,10 @@ public class World
     //=====================================================================================================================================
     // Componentes Físicos
     //=====================================================================================================================================
-    public SparseSet<AuxTypes.PhysicsComponent> PhysicsComponent = new();         // pos, hitbox
+    public SparseSet<AuxTypes.PhysicsComponent> PhysicsComponent = new();          // pos, hitbox
     public SparseSet<AuxTypes.MovementComponent> MovementComponent = new();        // se le sumara a la pos para actualizarla
+    public SparseSet<bool> Gravity = new();                                        // me afecta la gravedad
+
     public SparseSet<char> ascii = new();                                          // placeholder
     public SparseSet<bool> solid = new();                                          // bloqueo movimiento/vision?
     //=====================================================================================================================================

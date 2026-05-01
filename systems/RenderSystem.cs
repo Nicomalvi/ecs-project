@@ -13,7 +13,7 @@ public static class RenderSystem
             var p = W.PhysicsComponent.Get(id);
             Color color = id == W.Player ? Color.Green : Color.Red;
             Raylib.DrawRectanglePro(
-            new Rectangle(p.x, p.y, p.width, p.height),
+            new Rectangle(p.x, 600 - p.y - p.height, p.width, p.height),
             new Vector2(0, 0),  // origin
             0f,                 // rotation
             color
