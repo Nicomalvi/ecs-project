@@ -1,80 +1,98 @@
 using Raylib_cs;
+
 public static class MovementSystem
 {
     public static void Run(World w)
     {
+        float dt = Raylib.GetFrameTime();
+
         var movementComponents = w.MovementComponent;
-        for (int i = 0; i < movementComponents.dense.Count; i++) // estoy iterando sobre los que tienen w.movement
+
+        for (int i = 0; i < movementComponents.dense.Count; i++)
         {
             int id = movementComponents.valid_ids[i];
-            // sumo a pos, chequeo si choca alguna hitbox, lo dejo en 0?
-            var movementComponent = movementComponents.Get(id);
-            var physicsComponent = w.PhysicsComponent.Get(id); // id = valor "real" de i
-
-            // si choco con otra hitbox, me quedo quieto o lo mas cerca posible?
-            // por ahora quieto
-
-            float dt = Raylib.GetFrameTime(); // necesario para comportamiento independiente de frame length
-            float newX = physicsComponent.x + movementComponent.vx * dt;
-            float newY = physicsComponent.y + movementComponent.vy * dt;
-
-            // offset hitboxes es 0 por ahora, no lo tengo en cuenta
-
-            // coords en la grid
-            int oldCellX = (int) physicsComponent.x / Config.CELL_SIZE; //div entera?
-            int oldCellY = (int) physicsComponent.y / Config.CELL_SIZE;
-            int newCellX = (int) newX / Config.CELL_SIZE; //div entera?
-            int newCellY = (int) newY / Config.CELL_SIZE;
-
-            // tamaño en tiles de la hitbox de esta entidad
-            int newCellXEnd = (int)((newX + physicsComponent.width) / Config.CELL_SIZE);
-            int newCellYEnd = (int)((newY + physicsComponent.height) / Config.CELL_SIZE);
-
-            var newPhysicsComponent = physicsComponent;
-            var nullMovement = new AuxTypes.MovementComponent {vx = 0, vy = 0};
-            newPhysicsComponent.x = newX;
-            for (int j = newCellX; j<= newCellXEnd; j++)
+            var movement = movementComponents.Get(id);
+            var physics = w.PhysicsComponent.Get(id);
+            float dx = movement.vx * dt;
+            float dy = movement.vy * dt;
+            // ============================================================
+            // MOVER EN X
+            // ============================================================
+            physics.x += dx;
+            if (ResolveCollisions(w, id, ref physics, movement, axisX: true))
             {
-                // chequeo colisiones hitbox si me muevo HORIZONTALMENTE
-                List<int> entitiesInMap = w.GameMap[j, oldCellY];
-                foreach (int entityInMap in entitiesInMap)
-                {
-                    if (entityInMap == id) continue;
-                    var EntityphysicsComponent = w.PhysicsComponent.Get(entityInMap);
-                    bool collides = CollisionCheck(newPhysicsComponent, EntityphysicsComponent);
-                    if (collides)
-                    {
-                        w.MovementComponent.Set(id, nullMovement);
-                        return;
-                    }
-                }
+                movement.vx = 0;
             }
-            // si llegue hasta aca, no hubo colisiones en el eje X
-            w.PhysicsComponent.Set(id, newPhysicsComponent);
-            newPhysicsComponent.y = newY;
-            for (int j = newCellY; j<= newCellYEnd; j++)
+            w.PhysicsComponent.Set(id, physics);
+            // ============================================================
+            // MOVER EN Y
+            // ============================================================
+            physics.y += dy;
+            if (ResolveCollisions(w, id, ref physics, movement, axisX: false))
             {
-                // paso por las tiles que ocupara mi hitbox si me muevo VERTICALMENTE para cheq. colision
-                List<int> entitiesInMap = w.GameMap[newCellX, j];
-                foreach (int entityInMap in entitiesInMap)
-                {
-                    if (entityInMap == id) continue;
-                    var EntityphysicsComponent = w.PhysicsComponent.Get(entityInMap);
-                    bool collides = CollisionCheck(newPhysicsComponent, EntityphysicsComponent);
-                    if (collides)
-                    {
-                        Console.WriteLine("!!!!!!!!!!!!!!!!!!!!!!1");
-                        w.MovementComponent.Set(id, nullMovement);
-                        return;
-                    }
-                }
+                movement.vy = 0;
             }
+            w.PhysicsComponent.Set(id, physics);
 
-            w.PhysicsComponent.Set(id, newPhysicsComponent);
-            w.MovementComponent.Set(id, nullMovement);
+            // ============================================================
+            // ACTUALIZAR MAPA
+            // ============================================================
+            movement.vx = movement.vx/2;
+            movement.vy = movement.vy/2;
+            w.MovementComponent.Set(id, movement);
             MapUtils.RemovePhysicalFromMap(w, id);
             MapUtils.AddPhysicalToMap(w, id);
         }
+    }
+
+    // ============================================================
+    // RESOLUCIÓN COLISIONES
+    // ============================================================
+
+    private static bool ResolveCollisions(
+        World w,
+        int id,
+        ref AuxTypes.PhysicsComponent phys,
+        AuxTypes.MovementComponent movement,
+        bool axisX
+    )
+    {
+        int startX = (int)(phys.x / Config.CELL_SIZE);
+        int endX   = (int)((phys.x + phys.width) / Config.CELL_SIZE);
+        int startY = (int)(phys.y / Config.CELL_SIZE);
+        int endY   = (int)((phys.y + phys.height) / Config.CELL_SIZE);
+        for (int x = startX; x <= endX; x++)
+        {
+            for (int y = startY; y <= endY; y++)
+            {
+                var list = w.GameMap[x, y];
+                foreach (int other in list)
+                {
+                    if (other == id) continue;
+                    var otherPhys = w.PhysicsComponent.Get(other);
+                    if (!CollisionCheck(phys, otherPhys)) continue;
+                    // ====================================================
+                    // CORRECCIÓN SEGÚN EJE
+                    // ====================================================
+                    if (axisX)
+                    {
+                        if (movement.vx > 0) // derecha
+                            phys.x = otherPhys.x - phys.width;
+                        else if (movement.vx < 0) // izquierda
+                            phys.x = otherPhys.x + otherPhys.width;
+                    }
+                    else
+                    {
+                        if (movement.vy > 0) // sube
+                            phys.y = otherPhys.y - phys.height;
+                        else if (movement.vy < 0) // baja
+                            phys.y = otherPhys.y + otherPhys.height;
+                    }
+                    return true; // colisión encontrada
+                }
+            }
+        }
+        return false;
     }
 
     public static bool CollisionCheck(AuxTypes.PhysicsComponent A, AuxTypes.PhysicsComponent B)

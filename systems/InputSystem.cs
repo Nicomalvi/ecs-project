@@ -3,7 +3,7 @@ public static class InputSystem
 {
     public static void Run(World w)
     {
-        int playerSpeed = 500;
+        int playerSpeed = 200;
         // ver que teclas estan siendo apretadas -> cambiar lo que deba cambiar
         if(Raylib.IsKeyDown((KeyboardKey)Config.RIGHT_KEY))
         {

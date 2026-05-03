@@ -8,7 +8,7 @@ public static class GravitySistem
         {
             var dt = Raylib.GetFrameTime();
             var MovementComponent = w.MovementComponent.Get(id);
-            MovementComponent.vy += -50;
+            MovementComponent.vy += -1000 * dt;
             w.MovementComponent.Set(id,MovementComponent);
         }
     }
