@@ -5,9 +5,7 @@ public static class MovementSystem
     public static void Run(World w)
     {
         float dt = Raylib.GetFrameTime();
-
         var movementComponents = w.MovementComponent;
-
         for (int i = 0; i < movementComponents.dense.Count; i++)
         {
             int id = movementComponents.valid_ids[i];
@@ -18,27 +16,33 @@ public static class MovementSystem
             // ============================================================
             // MOVER EN X
             // ============================================================
-            physics.x += dx;
-            if (ResolveCollisions(w, id, ref physics, movement, axisX: true))
-            {
-                movement.vx = 0;
-            }
+            physics.x += dx; // PODRIA SUMAR DE A PARTES EN VEZ DE TODO DE GOLPE
+            // correccion out of bounds
+            if(physics.x >= Config.WIDTH){physics.x = Config.WIDTH - Config.CELL_SIZE;}
+            if(physics.x < 0){physics.x = 0 + Config.CELL_SIZE;}
+
+            var targetX = physics.x;
+            physics = CollisionCorrectedPhys(w, id, physics, movement, horizontalMovement:true);
+            if (Math.Abs(targetX - physics.x) > 0.0001f) {movement.vx = 0;} // si existe un pequeño cambio, hubo una colisión
             w.PhysicsComponent.Set(id, physics);
             // ============================================================
             // MOVER EN Y
             // ============================================================
-            physics.y += dy;
-            if (ResolveCollisions(w, id, ref physics, movement, axisX: false))
-            {
-                movement.vy = 0;
-            }
-            w.PhysicsComponent.Set(id, physics);
+            physics.y += dy; // PODRIA SUMAR DE A PARTES EN VEZ DE TODO DE GOLPE
+            // correccion out of bounds
+            if(physics.y >= Config.HEIGHT){physics.y = Config.HEIGHT - Config.CELL_SIZE;}
+            if(physics.y < 0){physics.y = 0 + Config.CELL_SIZE;}
 
+            var targetY = physics.y;
+            physics = CollisionCorrectedPhys(w, id, physics, movement, horizontalMovement:false);
+            if (Math.Abs(targetY - physics.y) > 0.0001f) {movement.vy = 0;} // si existe un pequeño cambio, hubo una colisión
+            w.PhysicsComponent.Set(id, physics);
             // ============================================================
             // ACTUALIZAR MAPA
             // ============================================================
-            movement.vx = movement.vx/2;
-            movement.vy = movement.vy/2;
+            // pequeña simulacion de friccion (solo en eje x)
+            movement.vx *= 0.5f;
+            // movement.vy *= 0.5f; 
             w.MovementComponent.Set(id, movement);
             MapUtils.RemovePhysicalFromMap(w, id);
             MapUtils.AddPhysicalToMap(w, id);
@@ -48,19 +52,21 @@ public static class MovementSystem
     // ============================================================
     // RESOLUCIÓN COLISIONES
     // ============================================================
-
-    private static bool ResolveCollisions(
+    // esto se puede romper: por ejemplo chequeo colision contra caja 0, no hay, chequeo contra caja 1, correccion me mete en caja 0
+    // con varias pasadas quizas entro en un loop infinito, numero limitado de pasadas + destrabar si quede adentro de algo?
+    private static AuxTypes.PhysicsComponent CollisionCorrectedPhys(
         World w,
         int id,
-        ref AuxTypes.PhysicsComponent phys,
+        AuxTypes.PhysicsComponent phys,
         AuxTypes.MovementComponent movement,
-        bool axisX
+        bool horizontalMovement
     )
     {
         int startX = (int)(phys.x / Config.CELL_SIZE);
         int endX   = (int)((phys.x + phys.width) / Config.CELL_SIZE);
         int startY = (int)(phys.y / Config.CELL_SIZE);
         int endY   = (int)((phys.y + phys.height) / Config.CELL_SIZE);
+        var newPhys = phys;
         for (int x = startX; x <= endX; x++)
         {
             for (int y = startY; y <= endY; y++)
@@ -70,29 +76,28 @@ public static class MovementSystem
                 {
                     if (other == id) continue;
                     var otherPhys = w.PhysicsComponent.Get(other);
-                    if (!CollisionCheck(phys, otherPhys)) continue;
+                    if (!CollisionCheck(newPhys, otherPhys)) continue;
                     // ====================================================
                     // CORRECCIÓN SEGÚN EJE
                     // ====================================================
-                    if (axisX)
+                    if (horizontalMovement)
                     {
                         if (movement.vx > 0) // derecha
-                            phys.x = otherPhys.x - phys.width;
+                            newPhys.x = otherPhys.x - newPhys.width;
                         else if (movement.vx < 0) // izquierda
-                            phys.x = otherPhys.x + otherPhys.width;
+                            newPhys.x = otherPhys.x + otherPhys.width;
                     }
                     else
                     {
                         if (movement.vy > 0) // sube
-                            phys.y = otherPhys.y - phys.height;
+                            newPhys.y = otherPhys.y - newPhys.height;
                         else if (movement.vy < 0) // baja
-                            phys.y = otherPhys.y + otherPhys.height;
+                            newPhys.y = otherPhys.y + otherPhys.height;
                     }
-                    return true; // colisión encontrada
                 }
             }
         }
-        return false;
+        return newPhys;
     }
 
     public static bool CollisionCheck(AuxTypes.PhysicsComponent A, AuxTypes.PhysicsComponent B)

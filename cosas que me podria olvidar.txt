@@ -11,6 +11,10 @@ Para No Olvidar
 ===========================================
 en orden de importancia... cosas que hacer
 ===========================================
+- chequeos colisiones necesita varias pasadas
+- pos + movimiento no necesariamente 1 paso, puedo dividir y hacer 10 mov. chicos para encontrar primera col. temprano y no irme muy lejos
+(ejemplo: pared esta a 5 pixeles, me movi a velocidad 100000 entonces atravese)
+sale con raycast?
 ===========================================
 cosas arregladas!
 =================
