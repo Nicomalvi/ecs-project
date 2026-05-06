@@ -1,16 +1,15 @@
 public class World
 {
     public int Player = -1; // por ahora puedo controlar 1 entidad nomas
-    // componentes
 
     //=====================================================================================================================================
     // Componentes Físicos
     //=====================================================================================================================================
     public SparseSet<AuxTypes.PhysicsComponent> PhysicsComponent = new();          // pos, hitbox
-    public SparseSet<AuxTypes.MovementComponent> MovementComponent = new();        // se le sumara a la pos para actualizarla
+    public SparseSet<AuxTypes.MovementComponent> MovementComponent = new();        // se le sumara a la pos para actualizarla;
+    public SparseSet<AuxTypes.AnimationComponent> AnimationComponent = new();      // maneja la seleccion del sprite dependiendo de la anim.
+    public SparseSet<AuxTypes.SpriteComponent> sprite = new();                     // la imagen que se va a renderizar en el prox frame
     public SparseSet<bool> Gravity = new();                                        // me afecta la gravedad
-
-    public SparseSet<char> ascii = new();                                          // placeholder
     public SparseSet<bool> solid = new();                                          // bloqueo movimiento/vision?
     //=====================================================================================================================================
     // Componentes de entidades conscientes / interactuables

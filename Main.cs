@@ -2,6 +2,9 @@
 
 Raylib.InitWindow(Config.WIDTH, Config.HEIGHT, "DEVMODE");
 Raylib.SetTargetFPS(60); // util para que si varian los frames los juegos no varien (ej velocidades)
+Image testImage = Raylib.LoadImage("textures/test.png");
+Texture2D testTexture = Raylib.LoadTextureFromImage(testImage);
+Raylib.UnloadImage(testImage);
 
 World W = new World();
 // ============================================================================================
@@ -86,9 +89,12 @@ int testVel = 1;
 while (!Raylib.WindowShouldClose())
 {   
     W.MovementComponent.Add(platform1, new AuxTypes.MovementComponent { vx = testVel*100, vy = 0 });
-    RenderSystem.Run(W); // ACA en end drawing especificamente nace el concepto de los FPS
-    InputSystem.Run(W);
 
+    RenderSystem.Run(W, testTexture);
+    // terminó RenderSystem, sé que pasó 1 frame
+    //AnimationSystem.Run(w);
+
+    InputSystem.Run(W);
     GravitySistem.Run(W); // luego de decidir donde se mueve alguien, se le aplica gravedad
     MovementSystem.Run(W);
     W.Tick ++;

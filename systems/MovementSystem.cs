@@ -5,6 +5,10 @@ public static class MovementSystem
     public static void Run(World w)
     {
         float dt = Raylib.GetFrameTime();
+        // IMPORTANTISIMO 
+        // si multiplico velocidad por frame time, la velocidad no depende de los FPS
+        // la velocidad pasa a depender del TIEMPO (bien!!)
+        // sino, alguien corriendo el juego a 120fps juega distinto a alguien con 30fps
         var movementComponents = w.MovementComponent;
         for (int i = 0; i < movementComponents.dense.Count; i++)
         {
