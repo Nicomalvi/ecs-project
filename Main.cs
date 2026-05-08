@@ -1,10 +1,8 @@
-﻿using Raylib_cs;
+﻿using System.Numerics;
+using Raylib_cs;
 
 Raylib.InitWindow(Config.WIDTH, Config.HEIGHT, "DEVMODE");
-Raylib.SetTargetFPS(60); // util para que si varian los frames los juegos no varien (ej velocidades)
-Image testImage = Raylib.LoadImage("textures/test.png");
-Texture2D testTexture = Raylib.LoadTextureFromImage(testImage);
-Raylib.UnloadImage(testImage);
+Raylib.SetTargetFPS(60);
 
 World W = new World();
 // ============================================================================================
@@ -89,15 +87,17 @@ int testVel = 1;
 while (!Raylib.WindowShouldClose())
 {   
     W.MovementComponent.Add(platform1, new AuxTypes.MovementComponent { vx = testVel*100, vy = 0 });
+    
+    //AnimationSystem.Run(w); 
+    // animation decide, para los que tienen animacion, cual es el prox. sprite a renderizar
 
-    RenderSystem.Run(W, testTexture);
-    // terminó RenderSystem, sé que pasó 1 frame
-    //AnimationSystem.Run(w);
+    RenderSystem.Run(W);
 
     InputSystem.Run(W);
     GravitySistem.Run(W); // luego de decidir donde se mueve alguien, se le aplica gravedad
     MovementSystem.Run(W);
     W.Tick ++;
+
     if (W.PhysicsComponent.Get(platform1).x <= 66 || W.PhysicsComponent.Get(platform1).x >= Config.WIDTH - 97) {testVel *= -1;}
 }
 Raylib.CloseWindow();

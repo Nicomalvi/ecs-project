@@ -1,6 +1,11 @@
+using Raylib_cs;
+
 public static class AuxTypes
 {
-    // RECORDAR: STRUCT =/= CLASS, NO SE PASAN POR REF
+    // STRUCT =/= CLASS
+    // ============================================================
+    // FISICAS
+    // ============================================================
     public struct PhysicsComponent
     {
         public float x;
@@ -11,17 +16,21 @@ public static class AuxTypes
         public float height;
         public float offsetX;
         public float offsetY;
+
+        public FacingDirection facing;
     }
     public struct MovementComponent
     {
         public float vx;
         public float vy;
     }
-
+    // ============================================================
+    // RENDERIZADO
+    // ============================================================
     public struct AnimationComponent
-    {
-        public int textureX;            // describen mi pos. en la textura
-        public int textureY;
+    {   // importante: frame duration = 1 / animationFPS (que deberia ser lo mismo que gameFPS obviamente)
+        public int textureRow;          // describe mi pos. en la textura
+
         public int textureWidth;
         public int textureHeight;
 
@@ -29,14 +38,33 @@ public static class AuxTypes
 
         public int currentFrame;          
         public int maxFrame;            // aca termina la animacion
-        public string nextAnimation;    // que archivo cargar una vez que termino este
     }
-
+    public enum FacingDirection
+    {
+        left,
+        right
+    }
+    public enum EntityStates
+    {   // cambiara con cada accion o fin de accion
+        // animation, input, ia trabajan con esto
+        idle,
+        walk,
+        falling,
+        jump
+    }
+    public struct EntityStateComponent
+    {
+        public EntityStates state; // en que estado esta la entidad?
+        public float lockTimer;    // por cuanto tiempo no puede hacer nada mas?
+    }
     public struct SpriteComponent
     {
+        public int textureID;           // el world maneja las texturas, spriteCompone chequea cual agarrar
         public int textureX;            // describen mi pos. en la textura
         public int textureY;
         public int textureWidth;
         public int textureHeight;
     }
+    // ============================================================
+    // ============================================================
 }

@@ -1,3 +1,5 @@
+using Raylib_cs;
+
 public class World
 {
     public int Player = -1; // por ahora puedo controlar 1 entidad nomas
@@ -7,6 +9,7 @@ public class World
     //=====================================================================================================================================
     public SparseSet<AuxTypes.PhysicsComponent> PhysicsComponent = new();          // pos, hitbox
     public SparseSet<AuxTypes.MovementComponent> MovementComponent = new();        // se le sumara a la pos para actualizarla;
+    public SparseSet<AuxTypes.EntityStateComponent> StateComponent = new();
     public SparseSet<AuxTypes.AnimationComponent> AnimationComponent = new();      // maneja la seleccion del sprite dependiendo de la anim.
     public SparseSet<AuxTypes.SpriteComponent> sprite = new();                     // la imagen que se va a renderizar en el prox frame
     public SparseSet<bool> Gravity = new();                                        // me afecta la gravedad
@@ -20,14 +23,22 @@ public class World
     //=====================================================================================================================================
     public List<int>[,] GameMap;
     public int Tick = 0;
+    public List<Texture2D> textures;
     public World()
     {
         // inicializacion de un nivel
         GameMap = new List<int>[Config.WIDTH, Config.HEIGHT];
 
-        for (int i = 0; i < Config.WIDTH; i++)
-            for (int j = 0; j < Config.HEIGHT; j++)
+        for (int i = 0; i < Config.WIDTH; i++){
+            for (int j = 0; j < Config.HEIGHT; j++){
                 GameMap[i, j] = new List<int>();
+            }
+        }
+
+        textures = new List<Texture2D>();
+        Image testImage = Raylib.LoadImage("textures/test.png");
+        textures[0] = Raylib.LoadTextureFromImage(testImage);
+        Raylib.UnloadImage(testImage);
     }
     /*public void destroy_entity(int id)
     {

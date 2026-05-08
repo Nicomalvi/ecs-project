@@ -15,6 +15,8 @@ public static class MovementSystem
             int id = movementComponents.valid_ids[i];
             var movement = movementComponents.Get(id);
             var physics = w.PhysicsComponent.Get(id);
+            float initialX = physics.x;
+            var stateComponent = w.StateComponent.Get(id);
 
             // las entidades afectadas por la gravedad se dejan llevar por las plataformas debajo
             // problema: deberia chequear si plataforma se movió primero y ver delta
@@ -31,15 +33,27 @@ public static class MovementSystem
                     groundHorizontalSpeed = groundMovement.vx;
                     groundVerticallSpeed  = groundMovement.vy;
                 }   
+                else if (ground == -1)
+                {    
+                    stateComponent.state = AuxTypes.EntityStates.falling;
+                }
             }
             
             float dx = (movement.vx + groundHorizontalSpeed) * dt;
+            if (dx > 0) {physics.facing = AuxTypes.FacingDirection.right;}
+            if (dx < 0) {physics.facing = AuxTypes.FacingDirection.left;} 
+            // sino mantengo facing viejo
+
+            // si tan solo ME INTENTO mover a algun lado, paso a mirar ese lado
             float dy = (movement.vy + groundVerticallSpeed) * dt;
             int max_steps = (int)Math.Ceiling(Math.Max(Math.Abs(dx), Math.Abs(dy)));
             if (max_steps == 0)
             {   // EVITO DIVISON POR 0
                 movement.vx *= 0.5f;
+                stateComponent.state = AuxTypes.EntityStates.idle;
+                w.StateComponent.Set(id, stateComponent);
                 w.MovementComponent.Set(id, movement);
+                w.PhysicsComponent.Set(id, physics);
                 continue;
             } 
             float stepX = dx/max_steps;
@@ -47,6 +61,11 @@ public static class MovementSystem
             // hago tantos pasos como maxima cant. pixeles
             for (int j = 0; j<max_steps; j++)
             {
+                // si llego acá y stepX != 0 es porque sigo moviendome horizontalmente , no choqué
+                // CHEQUEO: si estaba en idle, paso a moverme
+                //          si ya me estaba moviendo en esta dir, sigo moviendome
+                //          si ya me estaba moviendo en otra dir, me doy vuelta
+                //          si estaba en el aire, sigo en el aire
                 physics.x += stepX;
                 physics.x = Math.Clamp(physics.x, 0, Config.WIDTH - physics.width); // correcion Out of bounds
                 if(stepX != 0 && CheckEntityColission(w,id,physics))
@@ -55,6 +74,9 @@ public static class MovementSystem
                     movement.vx = 0; 
                     stepX = 0; //ya choque, sumo 0 hasta el final del loop y no entro más a buscar colision
                 }
+                // si llego acá y stepY != 0 es porque sigo moviendome verticalmente , no choqué
+                // CHEQUEO: si estaba en idle, paso a estar en el aire
+                //          si ya estaba en el aire, sigo en el aire
                 physics.y += stepY;
                 physics.y = Math.Clamp(physics.y, 0, Config.HEIGHT - physics.height); // correccion Out of bounds
                 if(stepY != 0 && CheckEntityColission(w,id,physics))
@@ -64,7 +86,19 @@ public static class MovementSystem
                     stepY = 0; //ya choque, sumo 0 hasta el final del loop y no entro más a buscar colision
                 }
             }
+
             movement.vx *= 0.5f; // friccion simulada
+
+            if (stateComponent.state != AuxTypes.EntityStates.falling && 
+                stateComponent.state != AuxTypes.EntityStates.jump)
+            {
+                if (movement.vx == 0) {stateComponent.state = AuxTypes.EntityStates.idle;}
+                // no estoy en el aire + no me intenté mover = si o si estoy idle
+                else if (initialX != physics.x) {stateComponent.state = AuxTypes.EntityStates.walk;}
+                // no estoy en el aire + me intenté mover + me moví = estoy caminando
+            }
+
+            w.StateComponent.Set(id, stateComponent);
             w.PhysicsComponent.Set(id, physics);
             w.MovementComponent.Set(id, movement);
             MapUtils.RemovePhysicalFromMap(w, id);
