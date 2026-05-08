@@ -17,6 +17,33 @@ W.PhysicsComponent.Add(player, new AuxTypes.PhysicsComponent
     width = 32, height = 50 
 });
 W.MovementComponent.Add(player, new AuxTypes.MovementComponent { vx = 0, vy = 0 });
+AuxTypes.AnimationComponent playerAnimation = new AuxTypes.AnimationComponent
+{
+    textureRow = 0,
+    textureHeight = 32,
+    textureWidth = 32,
+    frameTime = 0,
+    currentFrame = 0,
+    maxFrame = 4
+};
+W.AnimationComponent.Add(player, playerAnimation);
+AuxTypes.EntityStateComponent playerState = new AuxTypes.EntityStateComponent
+{
+    state = AuxTypes.EntityStates.idle,
+    lockTimer = 0 
+};
+W.StateComponent.Add(player, playerState);
+AuxTypes.SpriteComponent playerSprite = new AuxTypes.SpriteComponent
+{
+    textureID = 0,
+    textureHeight = 32,
+    textureWidth = 32,
+    textureX = 0,
+    textureY = 0
+};
+W.sprite.Add(player, playerSprite);
+
+
 W.Gravity.Add(player, true);
 MapUtils.AddPhysicalToMap(W, player);
 
@@ -79,6 +106,13 @@ W.PhysicsComponent.Add(wall2, new AuxTypes.PhysicsComponent
 });
 MapUtils.AddPhysicalToMap(W, wall2);
 
+W.StateComponent.Add(platform1, playerState);
+W.StateComponent.Add(platform2, playerState);
+W.StateComponent.Add(platform3, playerState);
+W.StateComponent.Add(wall1, playerState);
+W.StateComponent.Add(wall2, playerState);
+W.StateComponent.Add(ceiling, playerState);
+W.StateComponent.Add(floor, playerState);
 // ============================================================================================
 // LOOP
 // ============================================================================================
@@ -87,9 +121,9 @@ int testVel = 1;
 while (!Raylib.WindowShouldClose())
 {   
     W.MovementComponent.Add(platform1, new AuxTypes.MovementComponent { vx = testVel*100, vy = 0 });
-    
-    //AnimationSystem.Run(w); 
-    // animation decide, para los que tienen animacion, cual es el prox. sprite a renderizar
+
+    //
+    AnimationSystem.Run(W); //elijo para los que tienen animacion, cual es el prox. sprite a renderizar
 
     RenderSystem.Run(W);
 
@@ -99,5 +133,7 @@ while (!Raylib.WindowShouldClose())
     W.Tick ++;
 
     if (W.PhysicsComponent.Get(platform1).x <= 66 || W.PhysicsComponent.Get(platform1).x >= Config.WIDTH - 97) {testVel *= -1;}
+
+    Console.WriteLine(W.StateComponent.Get(W.Player).state);
 }
 Raylib.CloseWindow();

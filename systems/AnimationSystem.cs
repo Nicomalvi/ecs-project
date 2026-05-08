@@ -18,11 +18,11 @@ public static class AnimationSystem
             if (animationComponent.frameTime >= Config.FRAME_DURATION)
             {
                 // debo pasar de frame!!
-                animationComponent.frameTime =- Config.FRAME_DURATION; // si tarde 0.18, quiero que el prox comience en 0.2
+                animationComponent.frameTime -= Config.FRAME_DURATION; // si tarde 0.18, quiero que el prox comience en 0.2
                 animationComponent.currentFrame++;  
             }
 
-            if (animationComponent.currentFrame >= animationComponent.maxFrame)
+            if (animationComponent.currentFrame > animationComponent.maxFrame)
             {
                 animationComponent.currentFrame = 0; 
                 // por las dudas, igualmente loopear una anim. no se deberia solucionar aqui

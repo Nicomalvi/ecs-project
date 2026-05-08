@@ -11,10 +11,13 @@ Para No Olvidar
 en orden de importancia... cosas que hacer
 =================================================================================================================================
 - movement system solo deberia mover cosas, state system deberia pasar por intenciones y acciones y decidir los state
+        temas delicados: ataque que empieza en plataforma y termina en aire deberia completar su animacion
+                         pero caminar en plataforma hasta caer corta animacion y pone animacion caida
 - caida va sumando gravedad infinitamente, llega a velocidades altas (implementar vel. max)
 - plataformas con cosas encima incompleto
 - deberia haber input override: si una habilidad hace que salte y ataque en el aire, durante la habilidad no puedo ingresar input
   y me debo mover tal como dicta la habilidad
+        Input buffer?
 - sistema que arme sprites: por ejemplo una plataforma de 128x32 puede ser el mismo tile de 32x32 4 veces con solo 1 componente sprite
 =================================================================================================================================
 cosas arregladas!

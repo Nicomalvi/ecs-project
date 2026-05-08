@@ -60,7 +60,7 @@ public static class AuxTypes
     public struct SpriteComponent
     {
         public int textureID;           // el world maneja las texturas, spriteCompone chequea cual agarrar
-        public int textureX;            // describen mi pos. en la textura
+        public int textureX;            // describen dimensiones EN LA TEXTURA que voy a renderizar
         public int textureY;
         public int textureWidth;
         public int textureHeight;

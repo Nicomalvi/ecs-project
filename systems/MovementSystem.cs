@@ -9,11 +9,10 @@ public static class MovementSystem
         // si multiplico velocidad por frame time, la velocidad no depende de los FPS
         // la velocidad pasa a depender del TIEMPO (bien!!)
         // sino, alguien corriendo el juego a 120fps juega distinto a alguien con 30fps
-        var movementComponents = w.MovementComponent;
-        for (int i = 0; i < movementComponents.dense.Count; i++)
+        for (int i = 0; i < w.MovementComponent.dense.Count; i++)
         {
-            int id = movementComponents.valid_ids[i];
-            var movement = movementComponents.Get(id);
+            int id = w.MovementComponent.valid_ids[i];
+            var movement = w.MovementComponent.Get(id);
             var physics = w.PhysicsComponent.Get(id);
             float initialX = physics.x;
             var stateComponent = w.StateComponent.Get(id);
@@ -22,6 +21,7 @@ public static class MovementSystem
             // problema: deberia chequear si plataforma se movió primero y ver delta
             float groundHorizontalSpeed = 0;
             float groundVerticallSpeed = 0;
+            bool onPlatform = false;
             if (w.Gravity.Has(id) && w.Gravity.Get(id) == true)
             {
                 int ground = GetGroundId(w,physics,id);
@@ -32,6 +32,7 @@ public static class MovementSystem
                     var groundMovement = w.MovementComponent.Get(ground);
                     groundHorizontalSpeed = groundMovement.vx;
                     groundVerticallSpeed  = groundMovement.vy;
+                    onPlatform = true;
                 }   
                 else if (ground == -1)
                 {    
@@ -96,6 +97,10 @@ public static class MovementSystem
                 // no estoy en el aire + no me intenté mover = si o si estoy idle
                 else if (initialX != physics.x) {stateComponent.state = AuxTypes.EntityStates.walk;}
                 // no estoy en el aire + me intenté mover + me moví = estoy caminando
+            } else if (stateComponent.state == AuxTypes.EntityStates.falling && onPlatform)
+            {
+                if (movement.vx == 0) {stateComponent.state = AuxTypes.EntityStates.idle;}
+                else if (initialX != physics.x) {stateComponent.state = AuxTypes.EntityStates.walk;}
             }
 
             w.StateComponent.Set(id, stateComponent);

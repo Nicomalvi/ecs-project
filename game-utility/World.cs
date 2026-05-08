@@ -37,7 +37,7 @@ public class World
 
         textures = new List<Texture2D>();
         Image testImage = Raylib.LoadImage("textures/test.png");
-        textures[0] = Raylib.LoadTextureFromImage(testImage);
+        textures.Add(Raylib.LoadTextureFromImage(testImage));
         Raylib.UnloadImage(testImage);
     }
     /*public void destroy_entity(int id)
