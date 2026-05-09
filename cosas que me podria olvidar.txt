@@ -1,6 +1,9 @@
 =================================================================================================================================
 Para No Olvidar
 =================================================================================================================================
+- GRAFICOS CONSIDERAN (0,0) ARRIBA A LA IZQUIERDA DE LA PANTALLA. 
+  LOGICA DEL JUEGO ABAJO A LA IZQUIERDA.
+  
 - CONSIDERAR structs AI BUNDLE o PHYSICS BUNDLE, SoA e iterar sobre eso para volver a la cache friendly
 - CONSIDERAR arrays con tamaños fijos para grupos? ej. , en movement[1000] a movement[3000] habra solo IDS que tambien tienen
 -            position, IA, velocidad. De esta manera se puedo iterar de forma contigua varios arrays a la vez. 
@@ -10,11 +13,12 @@ Para No Olvidar
 =================================================================================================================================
 en orden de importancia... cosas que hacer
 =================================================================================================================================
+- se decide MAL siempre el estado actual
+- se decide mal la animacion que usar para cada estado
 - movement system solo deberia mover cosas, state system deberia pasar por intenciones y acciones y decidir los state
         temas delicados: ataque que empieza en plataforma y termina en aire deberia completar su animacion
                          pero caminar en plataforma hasta caer corta animacion y pone animacion caida
 - caida va sumando gravedad infinitamente, llega a velocidades altas (implementar vel. max)
-- plataformas con cosas encima incompleto
 - deberia haber input override: si una habilidad hace que salte y ataque en el aire, durante la habilidad no puedo ingresar input
   y me debo mover tal como dicta la habilidad
         Input buffer?
@@ -22,6 +26,7 @@ en orden de importancia... cosas que hacer
 =================================================================================================================================
 cosas arregladas!
 =================================================================================================================================
+- plataformas con cosas encima incompleto
 - chequeos colisiones necesita varias pasadas
 - pos + movimiento no necesariamente 1 paso, puedo dividir y hacer 10 mov. chicos para encontrar primera col. temprano y no irme muy lejos
 (ejemplo: pared esta a 5 pixeles, me movi a velocidad 100000 entonces atravese)

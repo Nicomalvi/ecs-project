@@ -9,11 +9,13 @@ public class World
     //=====================================================================================================================================
     public SparseSet<AuxTypes.PhysicsComponent> PhysicsComponent = new();          // pos, hitbox
     public SparseSet<AuxTypes.MovementComponent> MovementComponent = new();        // se le sumara a la pos para actualizarla;
+    public SparseSet<int> PlatformId = new();                                      // sobre quien estoy parado?
+    public SparseSet<List<int>> OnTopList = new();                                 // a quienes tengo directamente arriba?
     public SparseSet<AuxTypes.EntityStateComponent> StateComponent = new();
     public SparseSet<AuxTypes.AnimationComponent> AnimationComponent = new();      // maneja la seleccion del sprite dependiendo de la anim.
-    public SparseSet<AuxTypes.SpriteComponent> sprite = new();                     // la imagen que se va a renderizar en el prox frame
+    public SparseSet<AuxTypes.SpriteComponent> Sprite = new();                     // la imagen que se va a renderizar en el prox frame
     public SparseSet<bool> Gravity = new();                                        // me afecta la gravedad
-    public SparseSet<bool> solid = new();                                          // bloqueo movimiento/vision?
+    public SparseSet<bool> Solid = new();                                          // bloqueo movimiento/vision?
     //=====================================================================================================================================
     // Componentes de entidades conscientes / interactuables
     //=====================================================================================================================================

@@ -12,7 +12,7 @@ public static class AnimationSystem
         {
             int id = w.AnimationComponent.valid_ids[i];
             var animationComponent = w.AnimationComponent.dense[i];
-            var sprite = w.sprite.Get(id);
+            var sprite = w.Sprite.Get(id);
 
             animationComponent.frameTime += dt;
             if (animationComponent.frameTime >= Config.FRAME_DURATION)
@@ -35,7 +35,7 @@ public static class AnimationSystem
             sprite.textureY = spriteY;
 
             w.AnimationComponent.Set(id,animationComponent);
-            w.sprite.Set(id,sprite);
+            w.Sprite.Set(id,sprite);
         }
     }
 }

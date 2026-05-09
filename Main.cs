@@ -26,7 +26,7 @@ AuxTypes.AnimationComponent playerAnimation = new AuxTypes.AnimationComponent
     currentFrame = 0,
     maxFrame = 4
 };
-W.AnimationComponent.Add(player, playerAnimation);
+//W.AnimationComponent.Add(player, playerAnimation);
 AuxTypes.EntityStateComponent playerState = new AuxTypes.EntityStateComponent
 {
     state = AuxTypes.EntityStates.idle,
@@ -41,7 +41,7 @@ AuxTypes.SpriteComponent playerSprite = new AuxTypes.SpriteComponent
     textureX = 0,
     textureY = 0
 };
-W.sprite.Add(player, playerSprite);
+//W.Sprite.Add(player, playerSprite);
 
 
 W.Gravity.Add(player, true);
@@ -54,7 +54,7 @@ int platform1 = IDManager.get_id();
 W.PhysicsComponent.Add(platform1, new AuxTypes.PhysicsComponent 
 { 
     x = 300, y = 100, 
-    width = 32, height = 32 
+    width = 32, height = 32, hasMoved = false
 });
 MapUtils.AddPhysicalToMap(W, platform1);
 
@@ -62,7 +62,7 @@ int platform2 = IDManager.get_id();
 W.PhysicsComponent.Add(platform2, new AuxTypes.PhysicsComponent 
 { 
     x = 120, y = 350, 
-    width = 64, height = 32 
+    width = 64, height = 32, hasMoved = false
 });
 MapUtils.AddPhysicalToMap(W, platform2);
 
@@ -70,7 +70,7 @@ int platform3 = IDManager.get_id();
 W.PhysicsComponent.Add(platform3, new AuxTypes.PhysicsComponent 
 { 
     x = 150, y = 210, 
-    width = 64, height = 32 
+    width = 64, height = 32, hasMoved = false 
 });
 MapUtils.AddPhysicalToMap(W, platform3);
 
@@ -78,7 +78,7 @@ int floor = IDManager.get_id();
 W.PhysicsComponent.Add(floor, new AuxTypes.PhysicsComponent
 {
     x = 64, y = 64,
-    width = Config.WIDTH-Config.CELL_SIZE, height = 1
+    width = Config.WIDTH-Config.CELL_SIZE, height = 1, hasMoved = false
 });
 MapUtils.AddPhysicalToMap(W, floor);
 
@@ -86,7 +86,7 @@ int ceiling = IDManager.get_id();
 W.PhysicsComponent.Add(ceiling, new AuxTypes.PhysicsComponent
 {
     x = 64, y = Config.HEIGHT-Config.CELL_SIZE-32,
-    width = Config.WIDTH-Config.CELL_SIZE, height = 1
+    width = Config.WIDTH-Config.CELL_SIZE, height = 1, hasMoved = false
 });
 MapUtils.AddPhysicalToMap(W, ceiling);
 
@@ -94,7 +94,7 @@ int wall1 = IDManager.get_id();
 W.PhysicsComponent.Add(wall1, new AuxTypes.PhysicsComponent
 {
     x = 64, y = 64,
-    width = 1, height = Config.HEIGHT-Config.CELL_SIZE
+    width = 1, height = Config.HEIGHT-Config.CELL_SIZE, hasMoved = false
 });
 MapUtils.AddPhysicalToMap(W, wall1);
 
@@ -102,7 +102,7 @@ int wall2 = IDManager.get_id();
 W.PhysicsComponent.Add(wall2, new AuxTypes.PhysicsComponent
 {
     x = Config.WIDTH-Config.CELL_SIZE-32, y = 64,
-    width = 1, height = Config.HEIGHT-Config.CELL_SIZE
+    width = 1, height = Config.HEIGHT-Config.CELL_SIZE, hasMoved = false
 });
 MapUtils.AddPhysicalToMap(W, wall2);
 
@@ -121,6 +121,7 @@ int testVel = 1;
 while (!Raylib.WindowShouldClose())
 {   
     W.MovementComponent.Add(platform1, new AuxTypes.MovementComponent { vx = testVel*100, vy = 0 });
+    W.MovementComponent.Add(platform2, new AuxTypes.MovementComponent { vx = testVel*50, vy = 0 });
 
     //
     AnimationSystem.Run(W); //elijo para los que tienen animacion, cual es el prox. sprite a renderizar

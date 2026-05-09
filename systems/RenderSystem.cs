@@ -13,7 +13,7 @@ public static class RenderSystem
         for (int i = 0; i < W.PhysicsComponent.dense.Count; i++)
         {
             int id = W.PhysicsComponent.valid_ids[i];
-            if(W.sprite.Has(id)){continue;} // PLACEHOLDER si algo no tiene sprite, dibujo la hitbox
+            if(W.Sprite.Has(id)){continue;} // PLACEHOLDER si algo no tiene sprite, dibujo la hitbox
             var physics = W.PhysicsComponent.dense[i];
             Raylib.DrawRectangle(
                 (int)physics.x,
@@ -23,11 +23,11 @@ public static class RenderSystem
                 Color.White);
         }
 
-        for (int i = 0; i < W.sprite.dense.Count; i++)
+        for (int i = 0; i < W.Sprite.dense.Count; i++)
         {
-            int id = W.sprite.valid_ids[i];
+            int id = W.Sprite.valid_ids[i];
             var p = W.PhysicsComponent.Get(id);
-            var sprite = W.sprite.dense[i];
+            var sprite = W.Sprite.dense[i];
 
             AuxTypes.FacingDirection dir = p.facing;
             int widthSign = dir == AuxTypes.FacingDirection.right ? 1 : -1;

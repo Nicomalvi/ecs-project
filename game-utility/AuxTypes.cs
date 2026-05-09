@@ -11,6 +11,9 @@ public static class AuxTypes
         public float x;
         public float y;
 
+        public float deltaX;
+        public float deltaY;
+
         // para hitbox
         public float width;
         public float height;
@@ -18,6 +21,7 @@ public static class AuxTypes
         public float offsetY;
 
         public FacingDirection facing;
+        public bool hasMoved;
     }
     public struct MovementComponent
     {
