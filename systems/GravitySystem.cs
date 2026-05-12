@@ -7,9 +7,9 @@ public static class GravitySistem
         foreach (int id in w.Gravity.valid_ids)
         {
             var dt = Raylib.GetFrameTime();
-            var MovementComponent = w.MovementComponent.Get(id);
-            MovementComponent.vy += -150;
-            w.MovementComponent.Set(id,MovementComponent);
+            var Movement = w.Movement.Get(id);
+            Movement.velY += -150;
+            w.Movement.Set(id,Movement);
         }
     }
 }

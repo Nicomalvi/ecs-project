@@ -7,19 +7,19 @@ public class World
     //=====================================================================================================================================
     // Componentes Físicos
     //=====================================================================================================================================
-    public SparseSet<AuxTypes.PhysicsComponent> PhysicsComponent = new();          // pos, hitbox
-    public SparseSet<AuxTypes.MovementComponent> MovementComponent = new();        // se le sumara a la pos para actualizarla;
-    public SparseSet<int> PlatformId = new();                                      // sobre quien estoy parado?
-    public SparseSet<List<int>> OnTopList = new();                                 // a quienes tengo directamente arriba?
-    public SparseSet<AuxTypes.EntityStateComponent> StateComponent = new();
-    public SparseSet<AuxTypes.AnimationComponent> AnimationComponent = new();      // maneja la seleccion del sprite dependiendo de la anim.
-    public SparseSet<AuxTypes.SpriteComponent> Sprite = new();                     // la imagen que se va a renderizar en el prox frame
-    public SparseSet<bool> Gravity = new();                                        // me afecta la gravedad
-    public SparseSet<bool> Solid = new();                                          // bloqueo movimiento/vision?
+    public SparseSet<Components.Physics> Physics = new();                               // pos, hitbox
+    public SparseSet<Components.Movement> Movement = new();                             // se le sumara a la pos para actualizarla;
+    public SparseSet<Components.MovementData> MovementData = new();                     // info que usan otros sistemas
+    public SparseSet<int> PlatformId = new();                                           // sobre quien estoy parado?
+    public SparseSet<List<int>> OnTopList = new();                                      // a quienes tengo directamente arriba?
+    public SparseSet<Components.EntityState> StateComponent = new();
+    public SparseSet<Components.Animation> Animation = new();                           // maneja la seleccion del sprite dependiendo de la anim.
+    public SparseSet<Components.Sprite> Sprite = new();                                 // la imagen que se va a renderizar en el prox frame
+    public SparseSet<bool> Gravity = new();                                             // me afecta la gravedad
     //=====================================================================================================================================
     // Componentes de entidades conscientes / interactuables
     //=====================================================================================================================================
-    public SparseSet<string> name = new();                                         // claridad para el player
+    public SparseSet<string> name = new();                                              // claridad para el player
     //=====================================================================================================================================
     // Informacion global útil por nivel
     //=====================================================================================================================================

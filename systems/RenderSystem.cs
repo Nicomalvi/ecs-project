@@ -12,11 +12,11 @@ public static class RenderSystem
     
         // PLACEHOLDER
         // dibujo todas las hitbox 
-        for (int i = 0; i < W.PhysicsComponent.dense.Count; i++)
+        for (int i = 0; i < W.Physics.dense.Count; i++)
         {
-            int id = W.PhysicsComponent.valid_ids[i];
+            int id = W.Physics.valid_ids[i];
             if(W.Sprite.Has(id)){continue;} // PLACEHOLDER si algo no tiene sprite, dibujo la hitbox
-            var physics = W.PhysicsComponent.dense[i];
+            var physics = W.Physics.dense[i];
             Raylib.DrawRectangle(
                 (int)physics.x,
                 Config.HEIGHT - (int)physics.height - (int)physics.y,
@@ -28,11 +28,11 @@ public static class RenderSystem
         for (int i = 0; i < W.Sprite.dense.Count; i++)
         {
             int id = W.Sprite.valid_ids[i];
-            var p = W.PhysicsComponent.Get(id);
+            var p = W.Physics.Get(id);
             var sprite = W.Sprite.dense[i];
 
-            AuxTypes.FacingDirection dir = p.facing;
-            int widthSign = dir == AuxTypes.FacingDirection.right ? 1 : -1;
+            Components.FacingDirection dir = p.facing;
+            int widthSign = dir == Components.FacingDirection.right ? 1 : -1;
 
             Texture2D texture = W.textures[sprite.textureID];
             Rectangle source = new Rectangle(

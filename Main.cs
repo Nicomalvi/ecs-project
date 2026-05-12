@@ -11,13 +11,16 @@ World W = new World();
 // entidad jugador - cuadrado que se mueve
 int player = IDManager.get_id();
 W.Player = player;
-W.PhysicsComponent.Add(player, new AuxTypes.PhysicsComponent 
+W.Physics.Add(player, new Components.Physics 
 { 
     x = 100, y = 100, 
-    width = 32, height = 32 
+    width = 32, height = 32 , solid = true
 });
-W.MovementComponent.Add(player, new AuxTypes.MovementComponent { vx = 0, vy = 0, currentlyMoving = false});
-AuxTypes.AnimationComponent playerAnimation = new AuxTypes.AnimationComponent
+W.Movement.Add(player, new Components.Movement { 
+    velX = 0, maxVelX = 200,
+    velY = 0, maxVelY = 1800,
+    currentlyMoving = false});
+Components.Animation playerAnimation = new Components.Animation
 {
     textureRow = 0,
     textureHeight = 32,
@@ -26,14 +29,14 @@ AuxTypes.AnimationComponent playerAnimation = new AuxTypes.AnimationComponent
     currentFrame = 0,
     maxFrame = 4
 };
-W.AnimationComponent.Add(player, playerAnimation);
-AuxTypes.EntityStateComponent playerState = new AuxTypes.EntityStateComponent
+W.Animation.Add(player, playerAnimation);
+Components.EntityState playerState = new Components.EntityState
 {
-    state = AuxTypes.EntityStates.idle,
+    state = Components.State.idle,
     lockTimer = 0 
 };
 W.StateComponent.Add(player, playerState);
-AuxTypes.SpriteComponent playerSprite = new AuxTypes.SpriteComponent
+Components.Sprite playerSprite = new Components.Sprite
 {
     textureID = 0,
     textureHeight = 32,
@@ -51,58 +54,58 @@ MapUtils.AddPhysicalToMap(W, player);
 // mapa init
 // ============================================================================================
 int platform1 = IDManager.get_id();
-W.PhysicsComponent.Add(platform1, new AuxTypes.PhysicsComponent 
+W.Physics.Add(platform1, new Components.Physics 
 { 
     x = 300, y = 100, 
-    width = 32, height = 32, hasMoved = false
+    width = 32, height = 32, hasMoved = false, solid = true
 });
 MapUtils.AddPhysicalToMap(W, platform1);
 
 int platform2 = IDManager.get_id();
-W.PhysicsComponent.Add(platform2, new AuxTypes.PhysicsComponent 
+W.Physics.Add(platform2, new Components.Physics 
 { 
     x = 120, y = 350, 
-    width = 64, height = 32, hasMoved = false
+    width = 64, height = 32, hasMoved = false, solid = true
 });
 MapUtils.AddPhysicalToMap(W, platform2);
 
 int platform3 = IDManager.get_id();
-W.PhysicsComponent.Add(platform3, new AuxTypes.PhysicsComponent 
+W.Physics.Add(platform3, new Components.Physics 
 { 
     x = 150, y = 210, 
-    width = 64, height = 32, hasMoved = false 
+    width = 64, height = 32, hasMoved = false, solid = false
 });
 MapUtils.AddPhysicalToMap(W, platform3);
 
 int floor = IDManager.get_id();
-W.PhysicsComponent.Add(floor, new AuxTypes.PhysicsComponent
+W.Physics.Add(floor, new Components.Physics
 {
     x = 64, y = 64,
-    width = Config.WIDTH-Config.CELL_SIZE, height = 1, hasMoved = false
+    width = Config.WIDTH-Config.CELL_SIZE, height = 1, hasMoved = false, solid = true
 });
 MapUtils.AddPhysicalToMap(W, floor);
 
 int ceiling = IDManager.get_id();
-W.PhysicsComponent.Add(ceiling, new AuxTypes.PhysicsComponent
+W.Physics.Add(ceiling, new Components.Physics
 {
     x = 64, y = Config.HEIGHT-Config.CELL_SIZE-32,
-    width = Config.WIDTH-Config.CELL_SIZE, height = 1, hasMoved = false
+    width = Config.WIDTH-Config.CELL_SIZE, height = 1, hasMoved = false, solid = true
 });
 MapUtils.AddPhysicalToMap(W, ceiling);
 
 int wall1 = IDManager.get_id();
-W.PhysicsComponent.Add(wall1, new AuxTypes.PhysicsComponent
+W.Physics.Add(wall1, new Components.Physics
 {
     x = 64, y = 64,
-    width = 1, height = Config.HEIGHT-Config.CELL_SIZE, hasMoved = false
+    width = 1, height = Config.HEIGHT-Config.CELL_SIZE, hasMoved = false, solid = true
 });
 MapUtils.AddPhysicalToMap(W, wall1);
 
 int wall2 = IDManager.get_id();
-W.PhysicsComponent.Add(wall2, new AuxTypes.PhysicsComponent
+W.Physics.Add(wall2, new Components.Physics
 {
     x = Config.WIDTH-Config.CELL_SIZE-32, y = 64,
-    width = 1, height = Config.HEIGHT-Config.CELL_SIZE, hasMoved = false
+    width = 1, height = Config.HEIGHT-Config.CELL_SIZE, hasMoved = false, solid = true
 });
 MapUtils.AddPhysicalToMap(W, wall2);
 
@@ -120,21 +123,20 @@ Random rng = new Random();
 int testVel = 1;
 while (!Raylib.WindowShouldClose())
 {   
-    W.MovementComponent.Add(platform1, new AuxTypes.MovementComponent { vx = testVel*100, vy = 0, currentlyMoving = true});
-    W.MovementComponent.Add(platform2, new AuxTypes.MovementComponent { vx = testVel*50, vy = 0, currentlyMoving = true});
-    //
-    StateSystem.Run(W);
-    AnimationSystem.Run(W); //elijo para los que tienen animacion, cual es el prox. sprite a renderizar
+    W.Movement.Add(platform1, 
+    new Components.Movement { velX = testVel*100, maxVelX = 200, velY = 0, maxVelY = 1800, currentlyMoving = true});
+    W.Movement.Add(platform2, 
+    new Components.Movement { velX = testVel*50, maxVelX = 200, velY = 0, maxVelY = 1800, currentlyMoving = true});
 
+    AnimationSystem.Run(W); //elijo para los que tienen animacion, cual es el prox. sprite a renderizar
     RenderSystem.Run(W);
 
     InputSystem.Run(W);
-    GravitySistem.Run(W); // luego de decidir donde se mueve alguien, se le aplica gravedad
+    GravitySistem.Run(W);   // luego de decidir donde se mueve alguien, se le aplica gravedad
     MovementSystem.Run(W);
+    StateSystem.Run(W);     // los estados se actualizan con info. del movimiento
     W.Tick ++;
 
-    if (W.PhysicsComponent.Get(platform1).x <= 66 || W.PhysicsComponent.Get(platform1).x >= Config.WIDTH - 97) {testVel *= -1;}
-
-    Console.WriteLine(W.StateComponent.Get(W.Player).state);
+    if (W.Physics.Get(platform1).x <= 66 || W.Physics.Get(platform1).x >= Config.WIDTH - 97) {testVel *= -1;}
 }
 Raylib.CloseWindow();

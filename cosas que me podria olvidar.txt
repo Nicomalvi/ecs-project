@@ -1,9 +1,12 @@
 =================================================================================================================================
 Para No Olvidar
 =================================================================================================================================
+- cuando dude la pureza del ecs... abstraer aun mas!!
+      movement tambien actualiza estados... -> movement actualiza movementResult, stateSystem lo lee
+      quizas en un futuro movementResult es util para otros sistemas, minimo se que es mas organizado.
+      quizas tambien bundle: si tengo movement + state hay cierto sistema, si solo tengo movement hay otro
 - GRAFICOS CONSIDERAN (0,0) ARRIBA A LA IZQUIERDA DE LA PANTALLA. 
   LOGICA DEL JUEGO ABAJO A LA IZQUIERDA.
-
 - CONSIDERAR structs AI BUNDLE o PHYSICS BUNDLE, SoA e iterar sobre eso para volver a la cache friendly
 - CONSIDERAR arrays con tamaños fijos para grupos? ej. , en movement[1000] a movement[3000] habra solo IDS que tambien tienen
 -            position, IA, velocidad. De esta manera se puedo iterar de forma contigua varios arrays a la vez. 
@@ -13,17 +16,25 @@ Para No Olvidar
 =================================================================================================================================
 en orden de importancia... cosas que hacer
 =================================================================================================================================
-- sprites deberian tener layers: el fondo se dibuja atras de todo, una caja en el medio, jugador adelante...
-- movement system solo deberia mover cosas, state system deberia pasar por intenciones y acciones y decidir los state
-        temas delicados: ataque que empieza en plataforma y termina en aire deberia completar su animacion
-                         pero caminar en plataforma hasta caer corta animacion y pone animacion caida
-- caida va sumando gravedad infinitamente, llega a velocidades altas (implementar vel. max)
+- tipos de interaccion fisica: un item interactua con plataformas pero no bloquea el movimiento del jugador...
+- separar mapa fisico de mapa render? en un futuro no quiero chequear constantemente si estoy chocando contra algo decorativo
+      - layers del mapa fisico: en los chequeos de una entidad que va corriendo no deberian aparecer items que no molestan el paso
+      - lista de colisiones? ejemplo si en la lista de colisiones aparece una trampa perder vida, si aparece un npc mostrar dialogo...
+- sprites deberian tener layers: el fondo se dibuja atras de todo, una caja en el medio, jugador adelante, UI enfrente de todo...
+- guardar punteros para render? por ejemplo
+      lista LAYER-0 de todas las cosas de layer 0, asi...
+      evito pasar por el mapa entero para buscar layer 0, luego repetir para layer 1...
+- ataque que empieza en plataforma y termina en aire deberia completar su animacion, no pasar a "falling"
 - deberia haber input override: si una habilidad hace que salte y ataque en el aire, durante la habilidad no puedo ingresar input
   y me debo mover tal como dicta la habilidad
         Input buffer?
 =================================================================================================================================
 cosas arregladas!
 =================================================================================================================================
+- no existen entidades con posicion sin fisicas, ej., una caja que esta para decoracion, un fantasma atravesable...
+- separar codigo estado de movement
+- movement system solo deberia mover cosas, state system deberia pasar por intenciones y acciones y decidir los state
+- caida va sumando gravedad infinitamente, llega a velocidades altas (implementar vel. max)
 - sistema que arme sprites: por ejemplo una plataforma de 128x32 puede ser el mismo tile de 32x32 4 veces con solo 1 componente sprite
 - se decide MAL siempre el estado actual (TEMPORALMENTE ARREGLADO)
 - se decide mal la animacion que usar para cada estado
