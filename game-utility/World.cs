@@ -26,6 +26,8 @@ public class World
     public List<int>[,] GameMap;
     public int Tick = 0;
     public List<Texture2D> textures;
+
+    public Texture2D background;
     public World()
     {
         // inicializacion de un nivel
@@ -41,6 +43,8 @@ public class World
         Image testImage = Raylib.LoadImage("textures/test.png");
         textures.Add(Raylib.LoadTextureFromImage(testImage));
         Raylib.UnloadImage(testImage);
+        Image backgroundImage = Raylib.LoadImage("textures/background.png");
+        background = Raylib.LoadTextureFromImage(backgroundImage);
     }
     /*public void destroy_entity(int id)
     {

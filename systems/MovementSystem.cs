@@ -16,7 +16,6 @@ public static class MovementSystem
             phys.deltaY   = 0;
             w.PhysicsComponent.Set(id, phys);
         }
-
         // armo de 0 el grafo de plataformas, quien esta sobre quien
         for (int i = 0; i < w.PlatformId.dense.Count; i++)
         {
@@ -33,14 +32,14 @@ public static class MovementSystem
             int id = w.PhysicsComponent.valid_ids[i];
             // solo entidades con gravedad pueden estar "paradas sobre algo"
             if (!w.Gravity.Has(id) || !w.Gravity.Get(id)) continue;
-            var phys    = w.PhysicsComponent.Get(id);
+            var phys = w.PhysicsComponent.Get(id);
             int groundId = GetGroundId(w, phys, id);
             if (groundId == -1) continue;
             w.PlatformId.Add(id, groundId);
-            // yo tengo referencia del piso, piso tiene referencia mia
             if (!w.OnTopList.Has(groundId))
                 w.OnTopList.Add(groundId, new List<int>());
             w.OnTopList.Get(groundId).Add(id);
+            // yo tengo referencia del piso, piso tiene referencia mia
         }
         // muevo todas las unidades, si una de las que intento mover es parte de un grafo
         // voy de abajo para arriba
@@ -50,10 +49,9 @@ public static class MovementSystem
             MoveEntity(w, id, dt);
         }
     }
-
-    // ─────────────────────────────────────────────────────────────────────
+    // =====================================================================
     // ORDEN BOTTOM-UP RECURSIVO
-    // ─────────────────────────────────────────────────────────────────────
+    // =====================================================================
     private static void MoveEntity(World w, int id, float dt)
     {
         var physics = w.PhysicsComponent.Get(id);
@@ -62,10 +60,11 @@ public static class MovementSystem
         // si estoy parado sobre algo con movimiento, lo muevo primero
         if (w.PlatformId.Has(id))
         {
+            physics.grounded = true;
             int groundId = w.PlatformId.Get(id);
             if (w.MovementComponent.Has(groundId))
                 MoveEntity(w, groundId, dt); // recursion
-        }
+        } else {physics.grounded = false;}
         // obligatoriamente esta parte del codigo es posterior a mover la plataforma
         float groundDx = 0;
         float groundDy = 0;
@@ -78,31 +77,88 @@ public static class MovementSystem
         }
         MoveComponent(w, id, dt, groundDx, groundDy);
     }
-
-    // ─────────────────────────────────────────────────────────────────────
+    // =====================================================================
     // MOVIMIENTO INDIVIDUAL + COLISIONES
-    // ─────────────────────────────────────────────────────────────────────
+    // =====================================================================
     private static void MoveComponent(World w, int id, float dt, float groundDx, float groundDy)
     {
         var physics  = w.PhysicsComponent.Get(id);
         var movement = w.MovementComponent.Get(id);
-        float oldX = physics.x;
-        float oldY = physics.y;
-        // sumo groundDx/Y por separado para diferenciar de velocidad propia
-        float dx = movement.vx * dt + groundDx;
-        float dy = movement.vy * dt + groundDy;
+        float initialX = physics.x;
+        float initialY = physics.y;
+        // sumo movimiento del piso por separado para diferenciar de velocidad propia
+        var postPlatformComponents = TakeSteps(w,id,physics,new AuxTypes.MovementComponent{vx = 0, vy = 0},groundDx,groundDy);
+        
+        physics = postPlatformComponents.Item1;
+        float dx = movement.vx * dt;
+        float dy = movement.vy * dt;
+        // ahora sumo movmiento "personal", solo relacionado con mi velocidad
+        var postMovementComponents = TakeSteps(w,id,physics,movement,dx,dy);
+        physics = postMovementComponents.Item1;
+        movement = postMovementComponents.Item2;
+        bool movedFromFriction = !movement.currentlyMoving;
+        // friccion simulada seria con 0.5f
+        movement.vx *= 0.5f;
+        movement.currentlyMoving = false; // termine de procesar la velocidad, si me queda algo es rastro de la friccion
+        physics.deltaX   = physics.x - initialX;
+        physics.deltaY   = physics.y - initialY;
+        physics.hasMoved = true;
+        w.PhysicsComponent.Set(id, physics);
+        w.MovementComponent.Set(id, movement);
+        MapUtils.RemovePhysicalFromMap(w, id);
+        MapUtils.AddPhysicalToMap(w, id);
+
+        // =====================================================================
+        // chequeos finales para cambio de estado
+        // =====================================================================
+        bool finishedGrounded = GetGroundId(w,physics,id) != -1;                    // estoy parado sobre algo luego de todo movimiento?
+        bool movedIndividually = postPlatformComponents.Item1.x != physics.x;       // me movi en x? (sin tener en cuenta movimiento de la plataforma)
+        bool affectedByGravity = false;
+        if(w.Gravity.Has(id) && w.Gravity.Get(id)){affectedByGravity = true;}
+        AuxTypes.EntityStateComponent finalState = new AuxTypes.EntityStateComponent {lockTimer = 0, state = AuxTypes.EntityStates.idle};
+
+        // aca deberia ir chequeo de si puedo cambiar de estado, quizas estoy en un estado bloqueante 
+        // if else mejor performance?
+        // estoy en el aire, tengo gravedad -> FALLING
+        if (!finishedGrounded && affectedByGravity){finalState.state = AuxTypes.EntityStates.falling;}
+        // estoy en el aire, no me afecta la gravedad...
+        if (!finishedGrounded && !affectedByGravity){
+            if(movedIndividually){finalState.state = AuxTypes.EntityStates.moving;}
+            if(!movedIndividually){finalState.state = AuxTypes.EntityStates.idle;}
+            }
+        // estoy en el piso...
+        if (finishedGrounded)
+        {
+            // me quede quieto, o si me movi fue por la friccion -> idle
+            if(!movedIndividually || (movedIndividually && movedFromFriction)){finalState.state = AuxTypes.EntityStates.idle;}
+            // me movi y fue por mi cuenta -> moving
+            if(movedIndividually && !movedFromFriction){finalState.state = AuxTypes.EntityStates.moving;}
+        }
+        w.StateComponent.Set(id, finalState);
+    }
+    // =====================================================================
+    // DETECCIÓN COLISIONES
+    // =====================================================================
+    private static (AuxTypes.PhysicsComponent, AuxTypes.MovementComponent) TakeSteps(
+        World w,
+        int id,
+        AuxTypes.PhysicsComponent physics,
+        AuxTypes.MovementComponent movement,
+        float dx,
+        float dy
+    )
+    {
+        // sumo pasos de 1 pixel hasta chocar o terminar
+        // si choco: velocidad del eje es 0, sino luego en la funcion llamadora se divide para friccion
         if (dx > 0) { physics.facing = AuxTypes.FacingDirection.right; }
         if (dx < 0) { physics.facing = AuxTypes.FacingDirection.left; }
         int max_steps = (int)Math.Ceiling(Math.Max(Math.Abs(dx), Math.Abs(dy)));
         if (max_steps == 0)
         {   // EVITO DIVISION POR 0
-            movement.vx *= 0.5f;
-            physics.hasMoved = true;
+            movement.vx = 0;
             physics.deltaX   = 0;
             physics.deltaY   = 0;
-            w.MovementComponent.Set(id, movement);
-            w.PhysicsComponent.Set(id, physics);
-            return;
+            return (physics, movement);
         }
         float stepX = dx / max_steps;
         float stepY = dy / max_steps;
@@ -128,19 +184,8 @@ public static class MovementSystem
                 stepY = 0; //ya choque, sumo 0 hasta el final del loop y no entro más a buscar colision
             }
         }
-        movement.vx *= 0.5f; // friccion simulada
-        // guardo cuánto me moví REALMENTE
-        physics.deltaX   = physics.x - oldX;
-        physics.deltaY   = physics.y - oldY;
-        physics.hasMoved = true;
-        w.PhysicsComponent.Set(id, physics);
-        w.MovementComponent.Set(id, movement);
-        MapUtils.RemovePhysicalFromMap(w, id);
-        MapUtils.AddPhysicalToMap(w, id);
+        return (physics, movement);
     }
-    // ─────────────────────────────────────────────────────────────────────
-    // DETECCIÓN COLISIONES
-    // ─────────────────────────────────────────────────────────────────────
     private static bool CheckEntityColission(
         // true si la entidad que pasé esta chocando con otra
         World w,

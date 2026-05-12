@@ -20,6 +20,8 @@ public static class AuxTypes
         public float offsetX;
         public float offsetY;
 
+        public bool grounded;
+
         public FacingDirection facing;
         public bool hasMoved;
     }
@@ -27,6 +29,9 @@ public static class AuxTypes
     {
         public float vx;
         public float vy;
+
+        public bool currentlyMoving; 
+        // para diferenciar si mi velocidad viene de intentar moverme o es rastro de velocidad alta vieja
     }
     // ============================================================
     // RENDERIZADO
@@ -51,10 +56,9 @@ public static class AuxTypes
     public enum EntityStates
     {   // cambiara con cada accion o fin de accion
         // animation, input, ia trabajan con esto
-        idle,
-        walk,
-        falling,
-        jump
+        idle,       // QUIETO
+        moving,     // MOVIENDOSE (POR VOLUNTAD PROPIA)
+        falling    // EN EL AIRE / SIENDO AFECTADO POR GRAVEDAD
     }
     public struct EntityStateComponent
     {

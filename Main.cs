@@ -14,9 +14,9 @@ W.Player = player;
 W.PhysicsComponent.Add(player, new AuxTypes.PhysicsComponent 
 { 
     x = 100, y = 100, 
-    width = 32, height = 50 
+    width = 32, height = 32 
 });
-W.MovementComponent.Add(player, new AuxTypes.MovementComponent { vx = 0, vy = 0 });
+W.MovementComponent.Add(player, new AuxTypes.MovementComponent { vx = 0, vy = 0, currentlyMoving = false});
 AuxTypes.AnimationComponent playerAnimation = new AuxTypes.AnimationComponent
 {
     textureRow = 0,
@@ -26,7 +26,7 @@ AuxTypes.AnimationComponent playerAnimation = new AuxTypes.AnimationComponent
     currentFrame = 0,
     maxFrame = 4
 };
-//W.AnimationComponent.Add(player, playerAnimation);
+W.AnimationComponent.Add(player, playerAnimation);
 AuxTypes.EntityStateComponent playerState = new AuxTypes.EntityStateComponent
 {
     state = AuxTypes.EntityStates.idle,
@@ -41,7 +41,7 @@ AuxTypes.SpriteComponent playerSprite = new AuxTypes.SpriteComponent
     textureX = 0,
     textureY = 0
 };
-//W.Sprite.Add(player, playerSprite);
+W.Sprite.Add(player, playerSprite);
 
 
 W.Gravity.Add(player, true);
@@ -120,10 +120,10 @@ Random rng = new Random();
 int testVel = 1;
 while (!Raylib.WindowShouldClose())
 {   
-    W.MovementComponent.Add(platform1, new AuxTypes.MovementComponent { vx = testVel*100, vy = 0 });
-    W.MovementComponent.Add(platform2, new AuxTypes.MovementComponent { vx = testVel*50, vy = 0 });
-
+    W.MovementComponent.Add(platform1, new AuxTypes.MovementComponent { vx = testVel*100, vy = 0, currentlyMoving = true});
+    W.MovementComponent.Add(platform2, new AuxTypes.MovementComponent { vx = testVel*50, vy = 0, currentlyMoving = true});
     //
+    StateSystem.Run(W);
     AnimationSystem.Run(W); //elijo para los que tienen animacion, cual es el prox. sprite a renderizar
 
     RenderSystem.Run(W);
