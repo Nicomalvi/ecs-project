@@ -185,7 +185,7 @@ public static class MovementSystem
         Components.Physics phys
     )
     {
-        if (!phys.solid){return false;} // si no soy solido nunca habra colisiones
+        if (phys.collisionType == Components.CollisionType.nothing) {return false;}
         int startX = (int)(phys.x / Config.CELL_SIZE);
         int endX   = (int)((phys.x + phys.width) / Config.CELL_SIZE);
         int startY = (int)(phys.y / Config.CELL_SIZE);
@@ -200,7 +200,7 @@ public static class MovementSystem
                 {
                     if (other == id) continue;
                     var otherPhys = w.Physics.Get(other);
-                    if (!CollisionCheck(phys, otherPhys) || !otherPhys.solid) continue; // no hay colision si el otro es solido
+                    if (!canCollide(phys.collisionType, otherPhys.collisionType)||!CollisionCheck(phys,otherPhys)) continue;
                     return true;
                 }
             }
@@ -222,7 +222,7 @@ public static class MovementSystem
     // chequeo si el componente fisico esta arriba de otro
     // equivalente a estar en mismo x, y-1 que otra hitbox
     {
-        if(!phys.solid){return -1;} // si no soy solido nunca tendre piso
+        if(phys.collisionType == Components.CollisionType.nothing){return -1;} // si no soy solido nunca tendre piso
         float epsilon = 1f;     // comparo lo que este a 1 pixel
         var probe = phys;       // una "probe" representa hitbox desplazada hacia abajo
         probe.y -= epsilon;
@@ -241,7 +241,7 @@ public static class MovementSystem
             {
                 if (other == id) continue;
                 var otherPhys = w.Physics.Get(other);
-                if (!otherPhys.solid || !CollisionCheck(probe, otherPhys)) continue; // algo que no es solido no es mi piso
+                if (!canCollide(phys.collisionType,otherPhys.collisionType) || !CollisionCheck(probe, otherPhys)) continue;
                 float top = otherPhys.y + otherPhys.height;
                 // no voy a rozar todos los pisos por la misma cantidad exacta de pixeles
                 // me quedo con el mas alto
@@ -253,5 +253,14 @@ public static class MovementSystem
             }
         }
         return bestId;
+    }
+    public static bool canCollide(Components.CollisionType a, Components.CollisionType b)
+    {   // 2 entidades chocan si
+        // ambas son actores
+        // ninguna es nada y alguna es plataforma
+        return 
+        (a == Components.CollisionType.actor && b == Components.CollisionType.actor) ||
+        (a != Components.CollisionType.nothing && b != Components.CollisionType.nothing && 
+        (a == Components.CollisionType.platform || b == Components.CollisionType.platform));
     }
 }

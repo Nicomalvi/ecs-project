@@ -25,7 +25,14 @@ public static class Components
         public FacingDirection facing;
         public bool hasMoved;
 
-        public bool solid;
+        public CollisionType collisionType;
+    }
+    public enum CollisionType
+    {
+        platform,    // choco con TODO
+        actor,       // choco con plataformas, otros actores
+        item,        // choco solo con plataformas
+        nothing      // no soy considerado en colisones
     }
     public struct Movement
     {

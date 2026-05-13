@@ -8,7 +8,7 @@ public static class RenderSystem
         Raylib.BeginDrawing();
         Raylib.ClearBackground(Color.Black);
 
-        Raylib.DrawTexture(W.background,0,0,Color.White);
+        //Raylib.DrawTexture(W.background,0,0,Color.White);
     
         // PLACEHOLDER
         // dibujo todas las hitbox 
