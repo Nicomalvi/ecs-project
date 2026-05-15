@@ -6,10 +6,10 @@ public static class GravitySistem
     {
         foreach (int id in w.Gravity.valid_ids)
         {
-            var dt = Raylib.GetFrameTime();
-            var Movement = w.Movement.Get(id);
-            Movement.velY += -150;
-            w.Movement.Set(id,Movement);
+            float dt = Raylib.GetFrameTime();
+            var movement = w.Movement2.Get(id);
+            movement.vy -= 100;
+            w.Movement2.Set(id,movement); 
         }
     }
 }

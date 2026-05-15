@@ -1,33 +1,33 @@
 public static class MapUtils
 {
-    public static void AddPhysicalToMap(World w, int id)
+    public static void AddToHitboxMap(World w, int id)
     {
-        var Physics = w.Physics.Get(id);
-        int WidthCells = (int) Physics.width / Config.CELL_SIZE;
-        int HeightCells = (int) Physics.height / Config.CELL_SIZE;
+        var hitbox = w.Hitbox.Get(id);
+        int WidthCells = (int) hitbox.width / Config.CELL_SIZE;
+        int HeightCells = (int) hitbox.height / Config.CELL_SIZE;
 
         for(int i = 0; i<=WidthCells; i++)
         {
             for(int j = 0; j<=HeightCells; j++)
             {
-                w.GameMap[(int) Physics.x / Config.CELL_SIZE + i, 
-                          (int) Physics.y / Config.CELL_SIZE + j].Add(id);
+                w.HitboxMap[(int) hitbox.x / Config.CELL_SIZE + i, 
+                          (int) hitbox.y / Config.CELL_SIZE + j].Add(id);
             }
         }
     }
 
-    public static void RemovePhysicalFromMap(World w, int id)
+    public static void RemoveFromHitboxMap(World w, int id)
     {
-        var Physics = w.Physics.Get(id);
-        int WidthCells = (int) Physics.width / Config.CELL_SIZE;
-        int HeightCells = (int) Physics.height / Config.CELL_SIZE;
+        var hitbox = w.Hitbox.Get(id);
+        int WidthCells = (int) hitbox.width / Config.CELL_SIZE;
+        int HeightCells = (int) hitbox.height / Config.CELL_SIZE;
 
         for(int i = 0; i<=WidthCells; i++)
         {
             for(int j = 0; j<=HeightCells; j++)
             {
-                w.GameMap[(int) Physics.x / Config.CELL_SIZE + i, 
-                          (int) Physics.y / Config.CELL_SIZE + j].Remove(id);
+                w.HitboxMap[(int) hitbox.x / Config.CELL_SIZE + i, 
+                          (int) hitbox.y / Config.CELL_SIZE + j].Remove(id);
             }
         }
     }

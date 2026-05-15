@@ -7,8 +7,11 @@ public class World
     //=====================================================================================================================================
     // Componentes Físicos
     //=====================================================================================================================================
-    public SparseSet<Components.Physics> Physics = new();                               // pos, hitbox
-    public SparseSet<Components.Movement> Movement = new();                             // se le sumara a la pos para actualizarla;
+    public SparseSet<Components.Position> Position = new();
+    public SparseSet<Components.Movement2> Movement2 = new();
+    public SparseSet<Components.Hitbox> Hitbox = new();
+    public SparseSet<List<(int, (int,int))>> CollisionList = new(); // id, vector colision
+    
     public SparseSet<Components.MovementData> MovementData = new();                     // info que usan otros sistemas
     public SparseSet<int> PlatformId = new();                                           // sobre quien estoy parado?
     public SparseSet<List<int>> OnTopList = new();                                      // a quienes tengo directamente arriba?
@@ -23,7 +26,7 @@ public class World
     //=====================================================================================================================================
     // Informacion global útil por nivel
     //=====================================================================================================================================
-    public List<int>[,] GameMap;
+    public List<int>[,] HitboxMap;
     public int Tick = 0;
     public List<Texture2D> textures;
 
@@ -31,11 +34,11 @@ public class World
     public World()
     {
         // inicializacion de un nivel
-        GameMap = new List<int>[Config.WIDTH, Config.HEIGHT];
+        HitboxMap = new List<int>[Config.WIDTH, Config.HEIGHT];
 
         for (int i = 0; i < Config.WIDTH; i++){
             for (int j = 0; j < Config.HEIGHT; j++){
-                GameMap[i, j] = new List<int>();
+                HitboxMap[i, j] = new List<int>();
             }
         }
 

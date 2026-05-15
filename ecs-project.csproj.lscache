@@ -65,9 +65,10 @@ obj/Debug/net10.0/
  ecs-project.GlobalUsings.g.cs
 systems/
  AnimationSystem.cs
+ CollisionSystem.cs
  GravitySystem.cs
  InputSystem.cs
- MovementSystem.cs
+ MovementSystemV2.cs
  RenderSystem.cs
  StateSystem.cs
 utility/

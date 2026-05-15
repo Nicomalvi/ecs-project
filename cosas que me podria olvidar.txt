@@ -16,6 +16,7 @@ Para No Olvidar
 =================================================================================================================================
 en orden de importancia... cosas que hacer
 =================================================================================================================================
+- hace falta rework de componentes: physics deberia ser position, deberia existir comp. hitbox, deltas, isGrounded, onTopList sin usar
 - separar movementsystem en 3 grupos?
       - grupo pre_physics: se decide donde se mueven todos
       - grupo physics: se mueven todos, armo lista de colisiones (quizas en orden de cuando se chocaron)

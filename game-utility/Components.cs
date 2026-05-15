@@ -6,6 +6,27 @@ public static class Components
     // ============================================================
     // FISICAS
     // ============================================================
+    public struct Movement2
+    {
+        public float vx;
+        public float vy;
+        public float max;
+    }
+    public struct Position
+    {
+        public float x;
+        public float y;
+    }
+    public struct Hitbox
+    {
+        public float width;
+        public float height;
+        // misma x, y que position importa?
+        public float x;
+        public float y;
+        public CollisionType collisionType;
+    }
+
     public struct Physics
     {
         public float x;
