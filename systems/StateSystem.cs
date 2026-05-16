@@ -13,7 +13,7 @@ public static class StateSystem
                 var movementData = w.MovementData.Get(id);
                 bool finishedGrounded = movementData.isGrounded;
                 bool movedIndividually = movementData.movedIndividuallyX;
-                bool movedFromFriction = movementData.movedFromFriction;
+                //bool movedFromFriction = movementData.movedFromFriction;
                 bool affectedByGravity = false;
                 if(w.Gravity.Has(id) && w.Gravity.Get(id)){affectedByGravity = true;}
                 Components.EntityState finalState = new Components.EntityState {lockTimer = 0, state = Components.State.idle};
@@ -30,9 +30,9 @@ public static class StateSystem
                 if (finishedGrounded)
                 {
                     // me quede quieto, o si me movi fue por la friccion -> idle
-                    if(!movedIndividually || (movedIndividually && movedFromFriction)){finalState.state = Components.State.idle;}
+                    //if(!movedIndividually || (movedIndividually && movedFromFriction)){finalState.state = Components.State.idle;}
                     // me movi y fue por mi cuenta -> moving
-                    if(movedIndividually && !movedFromFriction){finalState.state = Components.State.moving;}
+                    //if(movedIndividually && !movedFromFriction){finalState.state = Components.State.moving;}
                 }
                 w.StateComponent.Set(id, finalState);
 

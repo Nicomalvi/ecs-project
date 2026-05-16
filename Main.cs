@@ -11,16 +11,10 @@ World w = new World();
 // entidad jugador - cuadrado que se mueve
 int player = IDManager.get_id();
 w.Player = player;
-w.Movement2.Add(player, new Components.Movement2{vx = 0, vy = 0, max = 1000});
-w.Position.Add(player,new Components.Position{x = 50, y = 50});
-w.Hitbox.Add(player, new Components.Hitbox{x = 50, y = 50, height = 16, width = 16});
-w.Gravity.Add(player, true);
-MapUtils.AddToHitboxMap(w,player);
-
+Components.AddBasicPhysics(w,player,50,50,16,16);
+w.Gravity.Add(player,true);
 int box = IDManager.get_id();
-w.Position.Add(box,new Components.Position{x = 300, y = 200});
-w.Hitbox.Add(box, new Components.Hitbox{x = 300, y = 200, height = 32, width = 32});
-MapUtils.AddToHitboxMap(w,box);
+Components.AddBasicPhysics(w,box,300,200,200,32);
 // ============================================================================================
 // LOOP
 // ============================================================================================
@@ -32,10 +26,11 @@ while (!Raylib.WindowShouldClose())
     InputSystem.Run(w);
 
     GravitySistem.Run(w);   // luego de decidir donde se mueve alguien, se le aplica gravedad
+    Components.Movement2 boxMoving = new Components.Movement2{vx = 20, vy = 0, max = 1000};
+    w.Movement2.Set(box,boxMoving);
     MovementSystemV2.Run(w);
-    CollisionSystem.Run(w);
+    //CollisionSystem.Run(w);
     //StateSystem.Run(w);     // los estados se actualizan con info. del movimiento
     w.Tick ++;
-    Console.WriteLine(w.Position.Get(w.Player).x);
 }
 Raylib.CloseWindow();

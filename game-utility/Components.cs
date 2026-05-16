@@ -26,27 +26,14 @@ public static class Components
         public float y;
         public CollisionType collisionType;
     }
-
-    public struct Physics
+    public struct MovementData
     {
-        public float x;
-        public float y;
-
-        public float deltaX;
-        public float deltaY;
-
-        // para hitbox
-        public float width;
-        public float height;
-        public float offsetX;
-        public float offsetY;
-
-        public bool grounded;
-
-        public FacingDirection facing;
         public bool hasMoved;
-
-        public CollisionType collisionType;
+        public bool isGrounded;             // termine de moverme arriba de alguna plataforma?
+        public bool movedIndividuallyX;     // intenté moverme por mi cuenta y lo logré?
+        public bool movedIndividuallyY;     // intenté moverme por mi cuenta y lo logré?
+        public bool frictionMovementX;      // el movimiento por mi cuenta, fue mío o fricción?
+        public bool frictionMovementY;      // el movimiento por mi cuenta, fue mío o fricción?
     }
     public enum CollisionType
     {
@@ -54,22 +41,6 @@ public static class Components
         actor,       // choco con plataformas, otros actores
         item,        // choco solo con plataformas
         nothing      // no soy considerado en colisones
-    }
-    public struct Movement
-    {
-        public float velX;
-        public float maxVelX;
-        public float velY;
-        public float maxVelY;
-
-        public bool currentlyMoving; 
-        // para diferenciar si mi velocidad viene de intentar moverme o es rastro de velocidad alta vieja
-    }
-    public struct MovementData
-    {
-        public bool isGrounded;             // termine de moverme arriba de alguna plataforma?
-        public bool movedIndividuallyX;     // intenté moverme por mi cuenta y lo logré?
-        public bool movedFromFriction;      // el movimiento por mi cuenta, fue mío o fricción?
     }
     // ============================================================
     // RENDERIZADO
@@ -113,4 +84,18 @@ public static class Components
     }
     // ============================================================
     // ============================================================
+    public static void AddBasicPhysics(World w, int id, float x, float y, float width, float height)
+    {
+        Movement2 movement = new Movement2 {vx = 0, vy = 0, max = 1000};
+        w.Movement2.Add(id,movement);
+        Position position = new Position{x = x, y = y};
+        w.Position.Add(id, position);
+        Hitbox hitbox = new Hitbox{x = x, y = y, width = width, height = height};
+        w.Hitbox.Add(id, hitbox);
+        MovementData moveData = new MovementData{isGrounded = false, frictionMovementX = false, frictionMovementY = false,
+        movedIndividuallyX = false, movedIndividuallyY = false, hasMoved = false};
+        w.MovementData.Add(id, moveData);
+
+        MapUtils.AddToHitboxMap(w,id);
+    }
 }
