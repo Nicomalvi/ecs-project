@@ -68,14 +68,18 @@ public static class MovementSystemV2
                 position.y += stepY;
                 position.y = Math.Clamp(position.y, 0, Config.HEIGHT-hitbox.height); // correcion Out of bounds
 
+                // RECORDAR POSITION =/= HITBOX, SIN ESTO SE ME ROMPIO
+                hitbox.x = position.x;
+                hitbox.y = position.y;
+
                 // OJO podria chequear colision 2 veces por paso: 1 en x otra en y
                 // voy armando en cada paso lista de colisiones ordenada
                 collisions = collisions.Concat(CellCollisionDetection(w,id,hitbox)).ToList();
             }
         }
-        // aca puedo dividir y que exista "friccion"
-        movement.vx = 0;
-        movement.vy = 0;
+        // aca puedo multiplicar y que exista "friccion" o dejar en 0 para precisión
+        movement.vx*=0.2f;
+        movement.vy*=0.2f;
         return (position, movement, collisions);
     }
 
@@ -98,7 +102,8 @@ public static class MovementSystemV2
                 var list = w.HitboxMap[x, y];
                 foreach (int other in list)
                 {
-                    if (other == id) continue;
+                    if (other == id || collisionList.Any(val => val.Item1 == other)) continue;
+                    // si ya choque en esta celda no me tengo en cuenta de vuelta
                     var ohterHitbox = w.Hitbox.Get(other);
                     (bool collided, var collisionVector) = HitboxCollision(hitbox, ohterHitbox);
                     if(collided)
@@ -125,13 +130,13 @@ public static class MovementSystemV2
             if(overlapHorizontal < overlapVertical) // elijo forma MAS PEQUEÑA de separarlos en el futuro
             {
                 // la normal de la colision es horizontal
-                if(A.x <= B.x)// chequeo si A esta a la izq o derecha
+                if(A.x < B.x)// chequeo si A esta a la izq o derecha
                 {normalColision = (-1,0);} else{normalColision = (1,0);}
             } else
             {
                 // la normal de la colision es vertical
-                if(A.y <= B.y) // chequeo si A esta arriba o abajo
-                {normalColision = (0,1);} else {normalColision = (0,-1);}
+                if(A.y < B.y) // chequeo si A esta arriba o abajo
+                {normalColision = (0,-1);} else {normalColision = (0,1);}
             }
             Console.WriteLine("col!!");
             return (true,normalColision);

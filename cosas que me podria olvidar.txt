@@ -16,11 +16,7 @@ Para No Olvidar
 =================================================================================================================================
 en orden de importancia... cosas que hacer
 =================================================================================================================================
-- hace falta rework de componentes: physics deberia ser position, deberia existir comp. hitbox, deltas, isGrounded, onTopList sin usar
-- separar movementsystem en 3 grupos?
-      - grupo pre_physics: se decide donde se mueven todos
-      - grupo physics: se mueven todos, armo lista de colisiones (quizas en orden de cuando se chocaron)
-      - grupo post physics: decido que hacer con las colisiones
+- mucha fuerza hacia abajo en el borde de una plataforma me fuerza a mover al costado y caer. esto no deberia pasar.
 - separar mapa fisico de mapa render? en un futuro no quiero chequear constantemente si estoy chocando contra algo decorativo
       - layers del mapa fisico: en los chequeos de una entidad que va corriendo no deberian aparecer items que no molestan el paso
       - lista de colisiones? ejemplo si en la lista de colisiones aparece una trampa perder vida, si aparece un npc mostrar dialogo...
@@ -35,6 +31,11 @@ en orden de importancia... cosas que hacer
 =================================================================================================================================
 cosas arregladas!
 =================================================================================================================================
+- separar movementsystem en 3 grupos?
+      - grupo pre_physics: se decide donde se mueven todos
+      - grupo physics: se mueven todos, armo lista de colisiones (quizas en orden de cuando se chocaron)
+      - grupo post physics: decido que hacer con las colisiones
+- hace falta rework de componentes: physics deberia ser position, deberia existir comp. hitbox, deltas, isGrounded, onTopList sin usar
 - tipos de interaccion fisica: un item interactua con plataformas pero no bloquea el movimiento del jugador...
 - no existen entidades con posicion sin fisicas, ej., una caja que esta para decoracion, un fantasma atravesable...
 - separar codigo estado de movement

@@ -11,7 +11,7 @@ public static class MapUtils
             for(int j = 0; j<=HeightCells; j++)
             {
                 w.HitboxMap[(int) hitbox.x / Config.CELL_SIZE + i, 
-                          (int) hitbox.y / Config.CELL_SIZE + j].Add(id);
+                            (int) hitbox.y / Config.CELL_SIZE + j].Add(id);
             }
         }
     }

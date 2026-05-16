@@ -3,7 +3,7 @@ public static class InputSystem
 {
     public static void Run(World w)
     {
-        int playerSpeed = 900;
+        int playerSpeed = 500;
         var currentMoveComponent = w.Movement2.Get(w.Player);
         if(Raylib.IsKeyDown((KeyboardKey)Config.RIGHT_KEY))
         {
